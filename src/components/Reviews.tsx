@@ -6,7 +6,7 @@ import SectionHeading from "./SectionHeading";
 
 export default function Reviews() {
   const { content } = useContent();
-  const reviews = content.reviews;
+  const reviews = content.reviews.filter((r) => !r.hidden);
 
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);

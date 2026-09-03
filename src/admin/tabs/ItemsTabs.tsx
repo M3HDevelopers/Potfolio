@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StarIcon } from "../../components/Icons";
 import { uid, useContent, type Review, type Testimonial } from "../../store/content";
-import { DeleteButton, ImagePicker, SaveBar, SelectInput, TextArea, TextInput, VideoPicker, useToast } from "../controls";
+import { DeleteButton, ImagePicker, SaveBar, SelectInput, TextArea, TextInput, VideoPicker, VisibilityToggle, useToast } from "../controls";
 
 const RATING_OPTIONS = [5, 4, 3, 2, 1].map((n) => ({ value: String(n), label: `${n} star${n > 1 ? "s" : ""}` }));
 
@@ -86,6 +86,15 @@ export function ReviewsTab() {
   const [editing, setEditing] = useState<Review | null>(null);
   const reviews = content.reviews;
 
+  const toggleVisibility = (id: string) => {
+    const target = reviews.find((r) => r.id === id);
+    updateSection(
+      "reviews",
+      reviews.map((r) => (r.id === id ? { ...r, hidden: !r.hidden } : r)),
+    );
+    toast(target?.hidden ? "Review is now visible on the website" : "Review hidden from the website");
+  };
+
   const save = (r: Review) => {
     if (!r.name.trim() || !r.text.trim()) {
       toast("Client name and review text are required", "err");
@@ -116,7 +125,12 @@ export function ReviewsTab() {
 
       <div className="mt-6 space-y-3">
         {reviews.map((r) => (
-          <article key={r.id} className="flex flex-wrap items-center gap-4 rounded-lg border border-white/10 bg-white/[0.02] p-4 sm:flex-nowrap">
+          <article
+            key={r.id}
+            className={`flex flex-wrap items-center gap-4 rounded-lg border bg-white/[0.02] p-4 transition-all sm:flex-nowrap ${
+              r.hidden ? "border-white/10 opacity-50 grayscale" : "border-white/10"
+            }`}
+          >
             <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-accent/40 bg-neutral-900">
               {r.photo ? (
                 <img src={r.photo} alt="" className="h-full w-full object-cover" />
@@ -125,7 +139,14 @@ export function ReviewsTab() {
               )}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="font-display text-sm font-bold text-white">{r.name || "(unnamed)"}</p>
+              <p className="flex items-center gap-2 font-display text-sm font-bold text-white">
+                <span className="truncate">{r.name || "(unnamed)"}</span>
+                {r.hidden ? (
+                  <span className="shrink-0 rounded-full border border-white/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-gray-500">
+                    Hidden
+                  </span>
+                ) : null}
+              </p>
               <p className="mt-0.5 truncate text-xs text-gray-500">
                 {r.platform} · {r.when}
               </p>
@@ -136,6 +157,7 @@ export function ReviewsTab() {
               </span>
             </div>
             <div className="flex shrink-0 items-center gap-2">
+              <VisibilityToggle small hidden={!!r.hidden} onToggle={() => toggleVisibility(r.id!)} />
               <button
                 onClick={() => setEditing({ ...r })}
                 className="rounded-full border border-white/20 px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-300 transition-colors hover:border-accent hover:text-accent"
@@ -229,6 +251,19 @@ export function TestimonialsTab() {
   const [editing, setEditing] = useState<Testimonial | null>(null);
   const testimonials = content.testimonials;
 
+  const toggleVisibility = (id: string) => {
+    const target = testimonials.find((t) => t.id === id);
+    updateSection(
+      "testimonials",
+      testimonials.map((t) => (t.id === id ? { ...t, hidden: !t.hidden } : t)),
+    );
+    toast(
+      target?.hidden
+        ? "Testimonial is now visible on the website"
+        : "Testimonial hidden from the website",
+    );
+  };
+
   const save = (t: Testimonial) => {
     if (!t.name.trim() || !t.video.trim()) {
       toast("Client name and video are required", "err");
@@ -263,17 +298,30 @@ export function TestimonialsTab() {
 
       <div className="mt-6 space-y-3">
         {testimonials.map((t) => (
-          <article key={t.id} className="flex flex-wrap items-center gap-4 rounded-lg border border-white/10 bg-white/[0.02] p-4 sm:flex-nowrap">
+          <article
+            key={t.id}
+            className={`flex flex-wrap items-center gap-4 rounded-lg border bg-white/[0.02] p-4 transition-all sm:flex-nowrap ${
+              t.hidden ? "border-white/10 opacity-50 grayscale" : "border-white/10"
+            }`}
+          >
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-accent/40 bg-neutral-900 font-display text-xs font-bold text-accent">
               {t.initials || initialsOf(t.name)}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="font-display text-sm font-bold text-white">{t.name || "(unnamed)"}</p>
+              <p className="flex items-center gap-2 font-display text-sm font-bold text-white">
+                <span className="truncate">{t.name || "(unnamed)"}</span>
+                {t.hidden ? (
+                  <span className="shrink-0 rounded-full border border-white/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-gray-500">
+                    Hidden
+                  </span>
+                ) : null}
+              </p>
               <p className="mt-0.5 truncate text-xs text-gray-500">
                 {t.project || "—"} · {t.duration} · {t.video ? "video attached ✓" : "no video yet"}
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-2">
+              <VisibilityToggle small hidden={!!t.hidden} onToggle={() => toggleVisibility(t.id!)} />
               <button
                 onClick={() => setEditing({ ...t })}
                 className="rounded-full border border-white/20 px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-300 transition-colors hover:border-accent hover:text-accent"

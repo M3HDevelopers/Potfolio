@@ -8,7 +8,7 @@ import {
   type ChangeEvent,
   type ReactNode,
 } from "react";
-import { CloseIcon } from "../components/Icons";
+import { CloseIcon, EyeIcon, EyeOffIcon } from "../components/Icons";
 import type { LabelValue, SkillRow } from "../store/content";
 
 /* ------------------------------------------------------------------ */
@@ -585,6 +585,40 @@ export function SaveBar({
         </button>
       </div>
     </div>
+  );
+}
+
+/**
+ * Show / hide an item on the public website.
+ * Hidden items stay in the admin panel but are filtered out of the site.
+ */
+export function VisibilityToggle({
+  hidden,
+  onToggle,
+  small = false,
+}: {
+  hidden: boolean;
+  onToggle: () => void;
+  small?: boolean;
+}) {
+  const cls = small
+    ? "rounded-md px-3 py-1.5 text-[10px] gap-1.5"
+    : "rounded-full px-3.5 py-1.5 text-[10px] gap-1.5";
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-pressed={!hidden}
+      title={hidden ? "Show on website" : "Hide from website"}
+      className={`inline-flex items-center font-bold uppercase tracking-wider transition-colors ${cls} ${
+        hidden
+          ? "border border-white/15 bg-white/5 text-gray-500 hover:border-white/40 hover:text-gray-200"
+          : "border border-accent/50 bg-accent/10 text-accent hover:bg-accent hover:text-black"
+      }`}
+    >
+      {hidden ? <EyeOffIcon className="h-3.5 w-3.5" /> : <EyeIcon className="h-3.5 w-3.5" />}
+      {hidden ? "Hidden" : "Public"}
+    </button>
   );
 }
 
