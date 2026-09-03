@@ -259,15 +259,15 @@ export const CONTACT_ITEMS: ContactItem[] = [
   { title: "Contact Number", value: "+92 314 3580908", icon: "phone", href: "tel:+923143580908" },
   {
     title: "Email Address",
-    value: "muzammil.m3h@gmail.com",
+    value: "muzammil.ahmed.dev@gmail.com",
     icon: "plane",
-    href: "mailto:muzammil.m3h@gmail.com",
+    href: "mailto:muzammil.ahmed.dev@gmail.com",
   },
   {
     title: "Resume",
     value: "Download Resume",
     icon: "globe",
-    href: "mailto:muzammil.m3h@gmail.com?subject=Resume%20Request%20%E2%80%94%20M3H-Web-Dev",
+    href: "mailto:muzammil.ahmed.dev@gmail.com?subject=Resume%20Request%20%E2%80%94%20Muzammil%20Ahmed",
   },
 ];
 

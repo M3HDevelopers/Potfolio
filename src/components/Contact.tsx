@@ -273,10 +273,10 @@ export default function Contact() {
                 <p className="text-sm text-gray-500">
                   Prefer writing directly?{" "}
                   <a
-                    href="mailto:muzammil.m3h@gmail.com"
+                    href="mailto:muzammil.ahmed.dev@gmail.com"
                     className="font-semibold text-accent underline decoration-accent/40 underline-offset-4 transition-colors hover:text-yellow-300"
                   >
-                    muzammil.m3h@gmail.com
+                    muzammil.ahmed.dev@gmail.com
                   </a>
                 </p>
               </div>
@@ -302,7 +302,7 @@ export default function Contact() {
         <footer className="mt-20 border-t border-white/5 pt-8 pb-2 text-center">
           <p className="text-xs text-gray-500 sm:text-sm">
             Copyright ©2026 All rights reserved |{" "}
-            <span className="text-gray-400">M3H-Web-Dev</span>
+            <span className="text-gray-400">Muzammil Ahmed</span>
           </p>
         </footer>
       </div>
