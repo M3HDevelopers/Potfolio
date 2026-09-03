@@ -102,6 +102,58 @@ export function ExternalLinkIcon(props: IconProps) {
   );
 }
 
+/** Filled five-point star. */
+export function StarIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props} aria-hidden="true">
+      <path d="M12 2.6l2.83 5.9 6.47.94-4.7 4.53 1.15 6.43L12 17.33l-5.75 3.07 1.15-6.43-4.7-4.53 6.47-.94z" />
+    </svg>
+  );
+}
+
+/** Filled double quotation marks. */
+export function QuoteIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props} aria-hidden="true">
+      <path d="M9.6 5.5C6.1 7.2 4 10.1 4 13.5c0 2.9 1.8 5 4.3 5 2.2 0 3.8-1.6 3.8-3.8 0-2.1-1.5-3.6-3.5-3.6-.3 0-.7 0-1 .1.3-1.9 1.7-3.6 3.6-4.7L9.6 5.5z" />
+      <path d="M19.6 5.5c-3.5 1.7-5.6 4.6-5.6 8 0 2.9 1.8 5 4.3 5 2.2 0 3.8-1.6 3.8-3.8 0-2.1-1.5-3.6-3.5-3.6-.3 0-.7 0-1 .1.3-1.9 1.7-3.6 3.6-4.7l-1.6-1z" />
+    </svg>
+  );
+}
+
+export function ChevronLeftIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props} aria-hidden="true">
+      <path d="m15 5-7 7 7 7" />
+    </svg>
+  );
+}
+
+export function ChevronRightIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props} aria-hidden="true">
+      <path d="m9 5 7 7-7 7" />
+    </svg>
+  );
+}
+
+export function CheckIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props} aria-hidden="true">
+      <path d="m4.5 12.5 5 5 10-11" />
+    </svg>
+  );
+}
+
+/** Solid play triangle for video thumbnails. */
+export function PlayIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props} aria-hidden="true">
+      <path d="M8.5 5.6v12.8a1 1 0 0 0 1.53.85l10.2-6.4a1 1 0 0 0 0-1.7L10.03 4.75a1 1 0 0 0-1.53.85Z" />
+    </svg>
+  );
+}
+
 export const CONTACT_ICONS = {
   signpost: SignpostIcon,
   phone: PhoneIcon,
