@@ -115,7 +115,8 @@ export const CONTACT_ITEMS: ContactItem[] = [
 ];
 
 /* ------------------------------------------------------------------ */
-/*  Testimonials — long-form client quotes (carousel)                  */
+/*  Testimonials — client video testimonials (own section)             */
+/*  Replace the `video` URLs with real client recordings later.        */
 /* ------------------------------------------------------------------ */
 
 export type Testimonial = {
@@ -123,91 +124,129 @@ export type Testimonial = {
   name: string;
   role: string;
   project: string;
+  initials: string;
+  rating: number;
+  video: string;
+  duration: string;
 };
 
 export const TESTIMONIALS: Testimonial[] = [
   {
     quote:
-      "Muzammil rebuilt our store from scratch — page loads dropped from 6 seconds to under 1, and conversions jumped 40% in the first month. Easily the best developer we have ever hired.",
+      "Muzammil rebuilt our store from scratch — page loads dropped from 6 seconds to under 1, and conversions jumped 40% in the first month.",
     name: "Sarah Mitchell",
     role: "Founder, UrbanSole — United Kingdom",
     project: "E-Commerce Rebuild",
+    initials: "SM",
+    rating: 5,
+    video:
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    duration: "0:15",
   },
   {
     quote:
-      "He delivered our delivery platform two weeks ahead of schedule and kept us updated every single day. The live order tracking he built with Socket.io works flawlessly, even at peak hours.",
+      "He delivered our platform two weeks ahead of schedule and kept us updated every single day. The live order tracking works flawlessly, even at peak hours.",
     name: "Omar Farooq",
     role: "CEO, FoodHub — Pakistan",
     project: "Real-time Delivery Platform",
+    initials: "OF",
+    rating: 5,
+    video:
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    duration: "0:15",
   },
   {
     quote:
-      "Communication was crystal clear, the code quality was top-notch, and he even set up our CI/CD pipeline without being asked. A true senior engineer who cares about the product.",
+      "Communication was crystal clear and the code quality top-notch. He even set up our CI/CD pipeline without being asked. A true senior engineer.",
     name: "Daniel Weber",
     role: "Product Manager, InsightHQ — Germany",
     project: "SaaS Analytics Dashboard",
+    initials: "DW",
+    rating: 5,
+    video:
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+    duration: "0:15",
   },
   {
     quote:
-      "We have worked with many freelancers, but Muzammil is the only one who thinks like a product owner. He flagged UX issues we had not even noticed and fixed them before launch.",
+      "We have worked with many freelancers, but Muzammil is the only one who thinks like a product owner. He flagged UX issues we hadn't even noticed.",
     name: "Ayesha Khan",
     role: "COO, Karvaan Tech — Karachi",
     project: "Booking Platform MVP",
+    initials: "AK",
+    rating: 4,
+    video:
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+    duration: "0:15",
   },
 ];
 
 /* ------------------------------------------------------------------ */
-/*  Reviews — star-rated platform reviews + rating summary             */
+/*  Reviews — star-rated platform reviews with client photos           */
+/*  Shown one at a time in a horizontally scrollable carousel.         */
 /* ------------------------------------------------------------------ */
 
 export type Review = {
   name: string;
+  role: string;
   platform: string;
   rating: number;
   text: string;
   when: string;
-};
-
-export const RATING_SUMMARY = {
-  average: 4.9,
-  total: 87,
-  distribution: [
-    { stars: 5, percent: 82 },
-    { stars: 4, percent: 13 },
-    { stars: 3, percent: 4 },
-    { stars: 2, percent: 1 },
-    { stars: 1, percent: 0 },
-  ],
+  photo: string;
+  initials: string;
 };
 
 export const REVIEWS: Review[] = [
   {
     name: "James Rodriguez",
+    role: "Founder, UrbanSole",
     platform: "Upwork",
     rating: 5,
-    text: "Delivered pixel-perfect React dashboards ahead of schedule. Clean, well-documented code and smooth handover.",
+    text: "Delivered pixel-perfect React dashboards ahead of schedule. Clean, well-documented code and a smooth handover — our in-house team picked it up with zero friction.",
     when: "2 weeks ago",
+    photo: "https://randomuser.me/portraits/men/32.jpg",
+    initials: "JR",
   },
   {
     name: "Fatima Sheikh",
+    role: "CEO, FoodHub",
     platform: "Fiverr",
     rating: 5,
-    text: "This is our third project together — zero bugs in production every single time. Highly recommended!",
+    text: "This is our third project together — zero bugs in production every single time. He treats your product like his own. Highly recommended!",
     when: "1 month ago",
+    photo: "https://randomuser.me/portraits/women/44.jpg",
+    initials: "FS",
   },
   {
     name: "Lucas Moreau",
+    role: "Product Manager, InsightHQ",
     platform: "Google",
     rating: 4,
-    text: "Great MERN skills and fast communication. Slight timezone overlap, but he made it work perfectly.",
+    text: "Great MERN skills and fast communication. Slight timezone overlap, but he made it work perfectly with async updates every morning.",
     when: "2 months ago",
+    photo: "https://randomuser.me/portraits/men/22.jpg",
+    initials: "LM",
   },
   {
     name: "Priya Nair",
+    role: "COO, Karvaan Tech",
     platform: "Upwork",
     rating: 5,
-    text: "Took our vague idea and turned it into a polished, investor-ready MVP in just six weeks.",
+    text: "Took our vague idea and turned it into a polished, investor-ready MVP in just six weeks. The demo day went flawlessly thanks to his prep.",
     when: "3 months ago",
+    photo: "https://randomuser.me/portraits/women/21.jpg",
+    initials: "PN",
+  },
+  {
+    name: "Hamza Tariq",
+    role: "Owner, Noor Boutique",
+    platform: "Google",
+    rating: 5,
+    text: "My boutique's website went from an idea to live in three weeks. He explained every step in simple words and the result looks better than my reference sites.",
+    when: "4 months ago",
+    photo: "https://randomuser.me/portraits/men/75.jpg",
+    initials: "HT",
   },
 ];
 

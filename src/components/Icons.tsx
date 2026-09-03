@@ -145,6 +145,15 @@ export function CheckIcon(props: IconProps) {
   );
 }
 
+/** Solid play triangle for video thumbnails. */
+export function PlayIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props} aria-hidden="true">
+      <path d="M8.5 5.6v12.8a1 1 0 0 0 1.53.85l10.2-6.4a1 1 0 0 0 0-1.7L10.03 4.75a1 1 0 0 0-1.53.85Z" />
+    </svg>
+  );
+}
+
 export const CONTACT_ICONS = {
   signpost: SignpostIcon,
   phone: PhoneIcon,
