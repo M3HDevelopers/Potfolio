@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StarIcon } from "../../components/Icons";
 import { uid, useContent, type Project } from "../../store/content";
-import { DeleteButton, ImagePicker, SaveBar, TextArea, TextInput, Toggle, useToast } from "../controls";
+import { DeleteButton, ImagePicker, SaveBar, TextArea, TextInput, Toggle, VisibilityToggle, useToast } from "../controls";
 
 const newProject = (): Project => ({
   id: uid(),
@@ -183,6 +183,15 @@ export default function ProjectsTab() {
     );
   };
 
+  const toggleVisibility = (id: string) => {
+    const target = projects.find((p) => p.id === id);
+    updateSection(
+      "projects",
+      projects.map((p) => (p.id === id ? { ...p, hidden: !p.hidden } : p)),
+    );
+    toast(target?.hidden ? "Project is now visible on the website" : "Project hidden from the website");
+  };
+
   if (editing) {
     return <ProjectForm project={editing} onSave={save} onCancel={() => setEditing(null)} />;
   }
@@ -207,8 +216,10 @@ export default function ProjectsTab() {
         {projects.map((p) => (
           <article
             key={p.id}
-            className={`flex flex-wrap items-center gap-4 rounded-lg border p-4 transition-colors sm:flex-nowrap ${
-              p.featured ? "border-accent/40 bg-accent/[0.05]" : "border-white/10 bg-white/[0.02]"
+            className={`flex flex-wrap items-center gap-4 rounded-lg border p-4 transition-all sm:flex-nowrap ${
+              p.hidden ? "opacity-50 grayscale" : ""
+            } ${
+              p.featured && !p.hidden ? "border-accent/40 bg-accent/[0.05]" : "border-white/10 bg-white/[0.02]"
             }`}
           >
             <img
@@ -220,6 +231,11 @@ export default function ProjectsTab() {
               <p className="flex items-center gap-2 font-display text-sm font-bold text-white">
                 <span className="truncate">{p.title || "(untitled)"}</span>
                 {p.featured ? <StarIcon className="h-3.5 w-3.5 shrink-0 text-accent" /> : null}
+                {p.hidden ? (
+                  <span className="shrink-0 rounded-full border border-white/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-gray-500">
+                    Hidden
+                  </span>
+                ) : null}
               </p>
               <p className="mt-0.5 truncate text-xs text-gray-500">
                 {p.gallery.length} screenshots · {p.stack.slice(0, 4).join(", ")}
@@ -236,6 +252,7 @@ export default function ProjectsTab() {
               >
                 {p.featured ? "★ Pinned" : "Pin to Top"}
               </button>
+              <VisibilityToggle small hidden={!!p.hidden} onToggle={() => toggleVisibility(p.id)} />
               <button
                 onClick={() => setEditing({ ...p })}
                 className="rounded-full border border-white/20 px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-300 transition-colors hover:border-accent hover:text-accent"

@@ -133,7 +133,7 @@ function SectionLabel({ title, note, star = false }: { title: string; note: stri
 
 export default function Projects() {
   const { content } = useContent();
-  const allProjects = content.projects;
+  const allProjects = content.projects.filter((p) => !p.hidden);
 
   const [selected, setSelected] = useState<Project | null>(null);
   const [slide, setSlide] = useState(0);

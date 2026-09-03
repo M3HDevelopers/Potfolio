@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useContent } from "../store/content";
 import { CheckIcon, CONTACT_ICONS, PlaneIcon } from "./Icons";
 import Reveal from "./Reveal";
@@ -179,7 +179,8 @@ function ContactForm() {
 export default function Contact() {
   const { content } = useContent();
   const { contactItems } = content;
-  const { email, copyrightName } = content.settings;
+  const { email, copyrightName, resume } = content.settings;
+  const resumeReady = !!resume?.data;
 
   const scrollToForm = () => {
     document.getElementById("contact-form")?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -225,15 +226,33 @@ export default function Contact() {
                 </span>
               </span>
             );
+            // The Resume card becomes a real download once a resume is uploaded in Settings.
+            const isResumeCard = item.title.toLowerCase().includes("resume");
+            let wrapper: ReactNode;
+            if (isResumeCard && resumeReady) {
+              wrapper = (
+                <a
+                  href={resume.data}
+                  download={resume.fileName || "Muzammil-Ahmed-Resume.pdf"}
+                  className="group inline-block"
+                  aria-label={`Download ${resume.fileName || "resume"}`}
+                >
+                  {inner}
+                </a>
+              );
+            } else if (item.href) {
+              wrapper = (
+                <a href={item.href} className="group inline-block" aria-label={item.title}>
+                  {inner}
+                </a>
+              );
+            } else {
+              wrapper = <div className="group inline-block">{inner}</div>;
+            }
+
             return (
               <Reveal key={`${item.title}-${i}`} delay={i * 110} className="text-center">
-                {item.href ? (
-                  <a href={item.href} className="group inline-block" aria-label={item.title}>
-                    {inner}
-                  </a>
-                ) : (
-                  <div className="group inline-block">{inner}</div>
-                )}
+                {wrapper}
               </Reveal>
             );
           })}

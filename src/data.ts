@@ -21,6 +21,8 @@ export type Project = {
    * Layout handles 1, 2, 3+ featured projects gracefully (admin-panel ready).
    */
   featured?: boolean;
+  /** Hidden projects are kept in the admin panel but not shown on the website. */
+  hidden?: boolean;
 };
 
 export const PROJECTS: Project[] = [
@@ -286,6 +288,8 @@ export type Testimonial = {
   rating: number;
   video: string;
   duration: string;
+  /** Hidden testimonials are kept in the admin panel but not shown on the website. */
+  hidden?: boolean;
 };
 
 export const TESTIMONIALS: Testimonial[] = [
@@ -354,6 +358,8 @@ export type Review = {
   when: string;
   photo: string;
   initials: string;
+  /** Hidden reviews are kept in the admin panel but not shown on the website. */
+  hidden?: boolean;
 };
 
 export const REVIEWS: Review[] = [

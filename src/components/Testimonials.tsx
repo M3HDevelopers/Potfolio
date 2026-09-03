@@ -116,7 +116,7 @@ function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; ind
 
 export default function Testimonials() {
   const { content } = useContent();
-  const testimonials = content.testimonials;
+  const testimonials = content.testimonials.filter((t) => !t.hidden);
 
   return (
     <section id="testimonials" className="relative overflow-hidden py-28">

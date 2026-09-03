@@ -49,6 +49,8 @@ export type SiteSettings = {
   email: string;
   adminPassword: string;
   navLinks: NavItem[];
+  /** Uploaded resume (data-URL) or an external link. Powers the Resume card download. */
+  resume: { fileName: string; data: string };
 };
 
 export type HeroContent = {
@@ -106,6 +108,7 @@ export const DEFAULT_CONTENT: SiteContent = {
       { id: "projects", label: "Projects" },
       { id: "contact", label: "Contact" },
     ],
+    resume: { fileName: "Muzammil-Ahmed-Resume.pdf", data: "" },
   },
   hero: {
     greeting: "Hello!",
@@ -152,7 +155,11 @@ function withIds<T extends { id?: string }>(arr: T[], prefix: string): T[] {
 function mergeContent(saved: Partial<SiteContent> | null): SiteContent {
   if (!saved || typeof saved !== "object") return DEFAULT_CONTENT;
   return {
-    settings: { ...DEFAULT_CONTENT.settings, ...(saved.settings ?? {}) },
+    settings: {
+      ...DEFAULT_CONTENT.settings,
+      ...(saved.settings ?? {}),
+      resume: saved.settings?.resume ?? DEFAULT_CONTENT.settings.resume,
+    },
     hero: { ...DEFAULT_CONTENT.hero, ...(saved.hero ?? {}) },
     about: { ...DEFAULT_CONTENT.about, ...(saved.about ?? {}) },
     projects: withIds(

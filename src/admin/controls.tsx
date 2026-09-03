@@ -8,7 +8,7 @@ import {
   type ChangeEvent,
   type ReactNode,
 } from "react";
-import { CloseIcon } from "../components/Icons";
+import { CloseIcon, EyeIcon, EyeOffIcon } from "../components/Icons";
 import type { LabelValue, SkillRow } from "../store/content";
 
 /* ------------------------------------------------------------------ */
@@ -390,6 +390,108 @@ export function VideoPicker({
 }
 
 /* ------------------------------------------------------------------ */
+/*  Resume picker                                                      */
+/* ------------------------------------------------------------------ */
+
+export function ResumePicker({
+  label,
+  value,
+  onChange,
+  hint,
+}: {
+  label: string;
+  value: { fileName: string; data: string };
+  onChange: (v: { fileName: string; data: string }) => void;
+  hint?: string;
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const toast = useToast();
+  const hasResume = !!value.data;
+  const isDataUrl = value.data.startsWith("data:");
+
+  const onFile = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (file.size > 3 * 1024 * 1024) {
+      toast("Resume too big (max 3MB) for browser storage — use a Drive/Dropbox link", "err");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      onChange({ fileName: file.name, data: String(reader.result) });
+      toast("Resume attached — don't forget to Save");
+    };
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <Field
+      label={label}
+      hint={
+        hint ??
+        "Upload a PDF (max 3MB) or paste a Drive/Dropbox link. Visitors who click the Resume card will download it."
+      }
+    >
+      <input ref={fileRef} type="file" accept=".pdf,application/pdf" className="hidden" onChange={onFile} />
+      <div className="space-y-2">
+        {hasResume ? (
+          <div className="flex items-center justify-between gap-3 rounded-md border border-accent/30 bg-accent/5 px-4 py-3">
+            <span className="flex min-w-0 items-center gap-2.5 text-sm font-medium text-accent">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 shrink-0" aria-hidden="true">
+                <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z" />
+                <path d="M14 3v5h5" />
+                <path d="M9 13h6" />
+                <path d="M9 17h6" />
+              </svg>
+              <span className="truncate">{value.fileName || "Resume"}</span>
+            </span>
+            <a
+              href={value.data}
+              download={value.fileName || "resume.pdf"}
+              className="shrink-0 text-[11px] font-bold uppercase tracking-wider text-accent underline decoration-accent/40 underline-offset-4 transition-colors hover:text-yellow-300"
+            >
+              Test download
+            </a>
+          </div>
+        ) : (
+          <div className="rounded-md border border-dashed border-white/20 px-4 py-3 text-xs text-gray-500">
+            No resume uploaded yet — the Resume card currently falls back to email.
+          </div>
+        )}
+        <input
+          value={isDataUrl ? "(uploaded file data)" : value.data}
+          placeholder="…or paste a resume URL (Google Drive / Dropbox)"
+          onChange={(e) => onChange({ fileName: value.fileName, data: e.target.value })}
+          onFocus={(e) => {
+            if (isDataUrl) e.target.select();
+          }}
+          className={inputCls}
+        />
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            className="rounded-full border border-accent/50 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-accent transition-colors hover:bg-accent hover:text-black"
+          >
+            Upload PDF
+          </button>
+          {hasResume ? (
+            <button
+              type="button"
+              onClick={() => onChange({ fileName: "", data: "" })}
+              className="rounded-full border border-white/15 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-400 transition-colors hover:border-red-400 hover:text-red-400"
+            >
+              Remove
+            </button>
+          ) : null}
+        </div>
+      </div>
+    </Field>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  List editors                                                       */
 /* ------------------------------------------------------------------ */
 
@@ -585,6 +687,40 @@ export function SaveBar({
         </button>
       </div>
     </div>
+  );
+}
+
+/**
+ * Show / hide an item on the public website.
+ * Hidden items stay in the admin panel but are filtered out of the site.
+ */
+export function VisibilityToggle({
+  hidden,
+  onToggle,
+  small = false,
+}: {
+  hidden: boolean;
+  onToggle: () => void;
+  small?: boolean;
+}) {
+  const cls = small
+    ? "rounded-md px-3 py-1.5 text-[10px] gap-1.5"
+    : "rounded-full px-3.5 py-1.5 text-[10px] gap-1.5";
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-pressed={!hidden}
+      title={hidden ? "Show on website" : "Hide from website"}
+      className={`inline-flex items-center font-bold uppercase tracking-wider transition-colors ${cls} ${
+        hidden
+          ? "border border-white/15 bg-white/5 text-gray-500 hover:border-white/40 hover:text-gray-200"
+          : "border border-accent/50 bg-accent/10 text-accent hover:bg-accent hover:text-black"
+      }`}
+    >
+      {hidden ? <EyeOffIcon className="h-3.5 w-3.5" /> : <EyeIcon className="h-3.5 w-3.5" />}
+      {hidden ? "Hidden" : "Public"}
+    </button>
   );
 }
 
