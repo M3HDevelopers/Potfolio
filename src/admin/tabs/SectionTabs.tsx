@@ -39,12 +39,12 @@ export function HeroTab() {
     <div>
       <div className="grid gap-5 sm:grid-cols-2">
         <TextInput label="Greeting" value={draft.greeting} onChange={(v) => set("greeting", v)} />
-        <TextInput label="Name intro" value={draft.nameIntro} onChange={(v) => set("nameIntro", v)} hint="Shown before the name — e.g. I am" />
+        <TextInput label="Name intro" value={draft.nameIntro} onChange={(v) => set("nameIntro", v)} hint="Shown before the name, e.g. I am" />
         <TextInput label="Your name (yellow)" value={draft.name} onChange={(v) => set("name", v)} />
-        <TextInput label="Role — line 1" value={draft.roleLine1} onChange={(v) => set("roleLine1", v)} />
+        <TextInput label="Role (Line 1)" value={draft.roleLine1} onChange={(v) => set("roleLine1", v)} />
       </div>
       <div className="mt-5">
-        <TextInput label="Role — line 2" value={draft.roleLine2} onChange={(v) => set("roleLine2", v)} />
+        <TextInput label="Role (Line 2)" value={draft.roleLine2} onChange={(v) => set("roleLine2", v)} />
       </div>
       <div className="mt-5 grid gap-5 sm:grid-cols-2">
         <TextInput label="Button text" value={draft.buttonText} onChange={(v) => set("buttonText", v)} />
@@ -148,7 +148,7 @@ export function ContactInfoTab() {
     <div>
       <p className="mb-6 rounded-lg border border-white/10 bg-white/[0.02] p-4 text-xs leading-relaxed text-gray-500">
         These are the four icon cards in the Contact section. <span className="text-gray-300">Link</span>{" "}
-        is optional — use <span className="text-accent">tel:…</span>,{" "}
+        is optional. Use <span className="text-accent">tel:…</span>,{" "}
         <span className="text-accent">mailto:…</span> or any URL.
       </p>
       <div className="space-y-5">
@@ -174,7 +174,7 @@ export function ContactInfoTab() {
       <button
         type="button"
         onClick={() =>
-          setDraft((d) => [...d, { title: "New Card", value: "—", icon: "globe" }])
+          setDraft((d) => [...d, { title: "New Card", value: "...", icon: "globe" }])
         }
         className="mt-4 inline-flex items-center gap-2 rounded-full border border-dashed border-white/25 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-300 transition-colors hover:border-accent hover:text-accent"
       >
@@ -245,7 +245,7 @@ function SecurityCard() {
           </svg>
         </span>
         <div>
-          <h3 className="font-display text-sm font-bold text-white">Security — Change Password</h3>
+          <h3 className="font-display text-sm font-bold text-white">Security: Change Password</h3>
           <p className="text-[11px] text-gray-500">
             New password OTP verification ke baad hi save hota hai.
           </p>
@@ -340,8 +340,8 @@ export function SettingsTab() {
   return (
     <div className="space-y-6">
       <div className="grid gap-5 sm:grid-cols-2">
-        <TextInput label="Logo — first word (white)" value={draft.logoFirst} onChange={(v) => set("logoFirst", v)} />
-        <TextInput label="Logo — second word (yellow)" value={draft.logoSecond} onChange={(v) => set("logoSecond", v)} />
+        <TextInput label="Logo, first word (white)" value={draft.logoFirst} onChange={(v) => set("logoFirst", v)} />
+        <TextInput label="Logo, second word (yellow)" value={draft.logoSecond} onChange={(v) => set("logoSecond", v)} />
         <TextInput
           label="Side signature"
           value={draft.sideSignature}

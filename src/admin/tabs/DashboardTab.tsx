@@ -9,7 +9,7 @@ export default function DashboardTab() {
   const unread = messages.filter((m) => !m.read).length;
   const avg = content.reviews.length
     ? (content.reviews.reduce((s, r) => s + r.rating, 0) / content.reviews.length).toFixed(1)
-    : "—";
+    : "0.0";
 
   const stats = [
     { label: "Total Projects", value: String(content.projects.length) },

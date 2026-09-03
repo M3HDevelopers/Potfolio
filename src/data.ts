@@ -104,7 +104,7 @@ export const PROJECTS: Project[] = [
     ],
     liveUrl: "https://example.com/projects/eduspark-lms",
     description:
-      "An e-learning platform with video courses, quizzes, progress tracking and auto-generated certificates — videos streamed securely from AWS S3.",
+      "An e-learning platform with video courses, quizzes, progress tracking and auto-generated certificates, with videos streamed securely from AWS S3.",
     stack: ["React.js", "Redux Toolkit", "Node.js", "MongoDB", "AWS S3"],
   },
   {
@@ -169,7 +169,7 @@ export const PROJECTS: Project[] = [
     ],
     liveUrl: "https://example.com/projects/chatsphere-messenger",
     description:
-      "A real-time chat app with group rooms, typing indicators, read receipts and media sharing — messages delivered instantly via WebSockets.",
+      "A real-time chat app with group rooms, typing indicators, read receipts and media sharing, with messages delivered instantly via WebSockets.",
     stack: ["React.js", "Socket.io", "Node.js", "MongoDB"],
   },
   {
@@ -295,9 +295,9 @@ export type Testimonial = {
 export const TESTIMONIALS: Testimonial[] = [
   {
     quote:
-      "Muzammil rebuilt our store from scratch — page loads dropped from 6 seconds to under 1, and conversions jumped 40% in the first month.",
+      "Muzammil rebuilt our store from scratch. Page loads dropped from 6 seconds to under 1, and conversions jumped 40% in the first month.",
     name: "Sarah Mitchell",
-    role: "Founder, UrbanSole — United Kingdom",
+    role: "Founder, UrbanSole, United Kingdom",
     project: "E-Commerce Rebuild",
     initials: "SM",
     rating: 5,
@@ -309,7 +309,7 @@ export const TESTIMONIALS: Testimonial[] = [
     quote:
       "He delivered our platform two weeks ahead of schedule and kept us updated every single day. The live order tracking works flawlessly, even at peak hours.",
     name: "Omar Farooq",
-    role: "CEO, FoodHub — Pakistan",
+    role: "CEO, FoodHub, Pakistan",
     project: "Real-time Delivery Platform",
     initials: "OF",
     rating: 5,
@@ -321,7 +321,7 @@ export const TESTIMONIALS: Testimonial[] = [
     quote:
       "Communication was crystal clear and the code quality top-notch. He even set up our CI/CD pipeline without being asked. A true senior engineer.",
     name: "Daniel Weber",
-    role: "Product Manager, InsightHQ — Germany",
+    role: "Product Manager, InsightHQ, Germany",
     project: "SaaS Analytics Dashboard",
     initials: "DW",
     rating: 5,
@@ -333,7 +333,7 @@ export const TESTIMONIALS: Testimonial[] = [
     quote:
       "We have worked with many freelancers, but Muzammil is the only one who thinks like a product owner. He flagged UX issues we hadn't even noticed.",
     name: "Ayesha Khan",
-    role: "COO, Karvaan Tech — Karachi",
+    role: "COO, Karvaan Tech, Karachi",
     project: "Booking Platform MVP",
     initials: "AK",
     rating: 4,
@@ -368,7 +368,7 @@ export const REVIEWS: Review[] = [
     role: "Founder, UrbanSole",
     platform: "Upwork",
     rating: 5,
-    text: "Delivered pixel-perfect React dashboards ahead of schedule. Clean, well-documented code and a smooth handover — our in-house team picked it up with zero friction.",
+    text: "Delivered pixel-perfect React dashboards ahead of schedule. Clean, well-documented code and a smooth handover, and our in-house team picked it up with zero friction.",
     when: "2 weeks ago",
     photo: "https://randomuser.me/portraits/men/32.jpg",
     initials: "JR",
@@ -378,7 +378,7 @@ export const REVIEWS: Review[] = [
     role: "CEO, FoodHub",
     platform: "Fiverr",
     rating: 5,
-    text: "This is our third project together — zero bugs in production every single time. He treats your product like his own. Highly recommended!",
+    text: "This is our third project together with zero bugs in production every single time. He treats your product like his own. Highly recommended!",
     when: "1 month ago",
     photo: "https://randomuser.me/portraits/women/44.jpg",
     initials: "FS",

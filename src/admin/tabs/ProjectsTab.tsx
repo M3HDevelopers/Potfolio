@@ -38,7 +38,7 @@ function ProjectForm({
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <h2 className="font-display text-lg font-bold text-white">
-          {project.title ? `Edit — ${project.title}` : "New Project"}
+          {project.title ? `Edit: ${project.title}` : "New Project"}
         </h2>
         <button
           onClick={onCancel}
@@ -76,7 +76,7 @@ function ProjectForm({
 
       <div>
         <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-gray-400">
-          Screenshots ({draft.gallery.length}) — first one is the card thumbnail
+          Screenshots ({draft.gallery.length}). First one is the card thumbnail
         </p>
         <div className="space-y-4">
           {draft.gallery.map((img, i) => (
@@ -267,7 +267,7 @@ export default function ProjectsTab() {
 
       <p className="mt-6 rounded-lg border border-white/10 bg-white/[0.02] p-4 text-xs leading-relaxed text-gray-500">
         Layout is count-safe: 1 pinned project shows as a large spotlight card, 2 as a two-column
-        row, 3+ as a three-column grid — so pinning any number of projects never breaks the design.
+        row, and 3+ as a three-column grid, so pinning any number of projects never breaks the design.
       </p>
     </div>
   );

@@ -1,5 +1,5 @@
 import { useContent } from "../store/content";
-import { ArrowRightIcon, ChevronDownIcon } from "./Icons";
+import { ArrowRightIcon, ChevronDownIcon, ChipIcon, RobotIcon } from "./Icons";
 
 /** Rotating circular badge — text on a slow orbit. */
 function OrbitBadge({ text }: { text: string }) {
@@ -12,8 +12,10 @@ function OrbitBadge({ text }: { text: string }) {
       <defs>
         <path id="orbit-circle" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" />
       </defs>
-      <text className="fill-current font-sans text-[13.5px] font-semibold uppercase" letterSpacing="4.5">
-        <textPath href="#orbit-circle">{text}</textPath>
+      <text className="fill-current font-sans text-[13px] font-semibold uppercase">
+        <textPath href="#orbit-circle" startOffset="0">
+          {text}
+        </textPath>
       </text>
     </svg>
   );
@@ -104,6 +106,23 @@ export default function Hero() {
             {"( )"}
           </span>
           <span className="absolute right-24 top-24 h-2.5 w-2.5 animate-float rounded-full bg-accent shadow-[0_0_18px_rgba(255,193,7,0.8)]" />
+
+          {/* AI / ML + robotics floaters */}
+          <span
+            className="absolute bottom-28 left-5 flex animate-float flex-col items-center gap-1 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-accent"
+            style={{ animationDelay: "0.6s" }}
+          >
+            <ChipIcon className="h-5 w-5" />
+            <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/60">
+              AI
+            </span>
+          </span>
+          <span className="absolute right-3 top-44 flex animate-float-slow flex-col items-center gap-1 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-white/70">
+            <RobotIcon className="h-5 w-5" />
+            <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-accent/80">
+              ML
+            </span>
+          </span>
         </div>
       </div>
 
