@@ -5,6 +5,7 @@ import {
   ImagePicker,
   PairsEditor,
   ParagraphsEditor,
+  ResumePicker,
   SaveBar,
   SelectInput,
   SkillsEditor,
@@ -246,6 +247,8 @@ export function SettingsTab() {
           hint="Saved locally — plug in real auth when the backend is ready."
         />
       </div>
+
+      <ResumePicker label="Resume (PDF)" value={draft.resume} onChange={(v) => set("resume", v)} />
 
       <div>
         <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-gray-400">
