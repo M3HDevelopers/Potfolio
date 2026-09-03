@@ -266,8 +266,12 @@ export default function Projects() {
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
+          {/*
+            Width is derived from the viewport height (1.5 = 3:2 aspect ratio)
+            so the screenshot + header + thumbnails always fit on screen.
+          */}
           <div
-            className="relative w-full max-w-5xl animate-pop-in"
+            className="relative w-[min(100%,calc((88vh-12rem)*1.5))] max-w-4xl animate-pop-in"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Top bar */}

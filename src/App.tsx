@@ -25,7 +25,7 @@ export default function App() {
         className="fixed bottom-0 left-7 z-40 hidden flex-col items-center gap-5 xl:flex"
       >
         <span className="text-[10px] font-semibold uppercase tracking-[0.4em] text-gray-600 [writing-mode:vertical-rl]">
-          M3H-Web-Dev — 2026
+          Muzammil Ahmed — 2026
         </span>
         <span className="h-24 w-px bg-gradient-to-b from-gray-700 to-transparent" />
       </div>
