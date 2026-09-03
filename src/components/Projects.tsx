@@ -1,183 +1,189 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { PROJECTS, type Project } from "../data";
-import { ChevronDownIcon, CloseIcon, ExpandIcon, ExternalLinkIcon } from "./Icons";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CloseIcon,
+  ExpandIcon,
+  ExternalLinkIcon,
+  StarIcon,
+} from "./Icons";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 import SmartImage from "./SmartImage";
 
-type LightboxState = { project: Project; index: number };
-
 /**
- * Full-screen gallery slider: arrows, thumbnails, counter,
- * keyboard (← → Esc) and touch-swipe navigation.
+ * Count-safe grid classes: layout never breaks whether 1, 2, 3 or more
+ * projects are marked as featured from the admin panel later.
  */
-function GalleryLightbox({
-  state,
-  onClose,
-  onNavigate,
-}: {
-  state: LightboxState;
-  onClose: () => void;
-  onNavigate: (index: number) => void;
-}) {
-  const { project, index } = state;
-  const total = project.gallery.length;
-  const touchX = useRef<number | null>(null);
+function gridClassFor(count: number) {
+  if (count <= 1) return "";
+  if (count === 2) return "md:grid-cols-2";
+  return "md:grid-cols-2 lg:grid-cols-3";
+}
 
-  const prev = useCallback(
-    () => onNavigate((index - 1 + total) % total),
-    [index, total, onNavigate],
-  );
-  const next = useCallback(() => onNavigate((index + 1) % total), [index, total, onNavigate]);
+type CardProps = {
+  project: Project;
+  index: number;
+  onOpen: (p: Project) => void;
+  /** Horizontal spotlight layout, used when exactly one project is featured. */
+  spotlight?: boolean;
+};
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowLeft") prev();
-      if (e.key === "ArrowRight") next();
-    };
-    document.addEventListener("keydown", onKey);
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prevOverflow;
-    };
-  }, [onClose, prev, next]);
-
+function ProjectCard({ project, index, onOpen, spotlight = false }: CardProps) {
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label={`${project.title} screenshots gallery`}
-      className="fixed inset-0 z-[80] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm sm:p-8"
-      onClick={onClose}
-    >
-      <div
-        className="relative flex max-h-full w-full max-w-5xl animate-pop-in flex-col"
-        onClick={(e) => e.stopPropagation()}
+    <Reveal delay={index * 120} className="h-full">
+      <article
+        className={`group relative flex h-full flex-col overflow-hidden rounded-lg border bg-white/[0.02] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_60px_rgba(255,193,7,0.12)] ${
+          project.featured
+            ? "border-accent/30 hover:border-accent/60"
+            : "border-white/10 hover:border-accent/40"
+        } ${spotlight ? "md:flex-row" : ""}`}
       >
-        {/* Top bar: counter + close */}
-        <div className="mb-3 flex items-center justify-between">
-          <p className="font-display text-xs font-semibold uppercase tracking-[0.3em] text-gray-400">
-            <span className="text-accent">{String(index + 1).padStart(2, "0")}</span>
-            <span className="mx-1.5 text-gray-600">/</span>
-            {String(total).padStart(2, "0")}
-          </p>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close gallery"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white transition-all duration-300 hover:rotate-90 hover:border-accent hover:text-accent"
-          >
-            <CloseIcon className="h-5 w-5" />
-          </button>
-        </div>
+        {project.featured ? (
+          <span className="absolute left-4 top-4 z-20 inline-flex items-center gap-1.5 rounded-full border border-accent/60 bg-black/85 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-accent backdrop-blur-sm">
+            <StarIcon className="h-3 w-3" />
+            Top Project
+          </span>
+        ) : null}
 
-        {/* Main slide */}
-        <div
-          className="relative"
-          onTouchStart={(e) => {
-            touchX.current = e.touches[0].clientX;
-          }}
-          onTouchEnd={(e) => {
-            if (touchX.current === null) return;
-            const delta = e.changedTouches[0].clientX - touchX.current;
-            if (delta > 50) prev();
-            if (delta < -50) next();
-            touchX.current = null;
-          }}
+        {/* Screenshot — opens the slider */}
+        <button
+          type="button"
+          onClick={() => onOpen(project)}
+          aria-label={`Open screenshot slider for ${project.title}`}
+          className={`relative block w-full cursor-pointer overflow-hidden text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent ${
+            spotlight ? "shrink-0 md:w-[54%]" : ""
+          }`}
         >
           <SmartImage
-            key={index}
-            src={project.gallery[index]}
-            alt={`${project.title} — screenshot ${index + 1} of ${total}`}
+            src={project.gallery[0]}
+            alt={`${project.title} website screenshot`}
             label={project.title}
-            className="aspect-[3/2] w-full animate-fade-up rounded-lg border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.85)]"
+            className={
+              spotlight
+                ? "aspect-[16/10] w-full md:aspect-auto md:h-full"
+                : "aspect-[3/2] w-full"
+            }
+            imgClassName="transition-transform duration-700 ease-out group-hover:scale-110"
           />
-
-          {total > 1 ? (
-            <>
-              <button
-                type="button"
-                onClick={prev}
-                aria-label="Previous screenshot"
-                className="absolute left-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/70 text-white backdrop-blur transition-all duration-300 hover:border-accent hover:bg-accent hover:text-black"
-              >
-                <ChevronDownIcon className="h-5 w-5 rotate-90" />
-              </button>
-              <button
-                type="button"
-                onClick={next}
-                aria-label="Next screenshot"
-                className="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/70 text-white backdrop-blur transition-all duration-300 hover:border-accent hover:bg-accent hover:text-black"
-              >
-                <ChevronDownIcon className="h-5 w-5 -rotate-90" />
-              </button>
-            </>
-          ) : null}
-        </div>
-
-        {/* Thumbnails */}
-        <div className="mt-4 flex items-center justify-center gap-3 overflow-x-auto pb-1">
-          {project.gallery.map((src, i) => (
-            <button
-              key={src}
-              type="button"
-              onClick={() => onNavigate(i)}
-              aria-label={`Go to screenshot ${i + 1}`}
-              aria-current={i === index}
-              className={`shrink-0 overflow-hidden rounded-md border-2 transition-all duration-300 ${
-                i === index
-                  ? "border-accent opacity-100 shadow-[0_0_18px_rgba(255,193,7,0.3)]"
-                  : "border-transparent opacity-45 hover:opacity-80"
-              }`}
-            >
-              <SmartImage
-                src={src}
-                alt=""
-                label=""
-                className="h-14 w-20 sm:h-16 sm:w-24"
-              />
-            </button>
-          ))}
-        </div>
-
-        {/* Footer: title + live demo */}
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <p className="font-display text-sm font-semibold text-white">
-            {project.title}
-            <span className="ml-3 hidden font-sans text-xs font-normal text-gray-500 sm:inline">
-              Use ← → keys or swipe
+          <span className="absolute inset-0 flex items-center justify-center bg-black/55 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <span className="flex h-14 w-14 items-center justify-center rounded-full border border-accent bg-black/70 text-accent transition-transform duration-300 group-hover:scale-110">
+              <ExpandIcon className="h-5 w-5" />
             </span>
-          </p>
-          <a
-            href={project.liveUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-yellow-300 hover:shadow-[0_10px_30px_rgba(255,193,7,0.35)]"
-          >
-            Live Demo
-            <ExternalLinkIcon className="h-3.5 w-3.5" />
-          </a>
+          </span>
+          <span className="absolute bottom-3 right-3 rounded-full bg-black/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white/80 backdrop-blur-sm">
+            {project.gallery.length} Screens
+          </span>
+        </button>
+
+        {/* Details */}
+        <div className={`flex grow flex-col p-6 ${spotlight ? "md:w-[46%] md:p-8" : ""}`}>
+          <h3 className={`font-display font-bold text-white ${spotlight ? "text-2xl" : "text-lg"}`}>
+            {project.title}{" "}
+            <span className="ml-1 text-sm font-medium text-accent">(Click on Image)</span>
+          </h3>
+          <p className="mt-2.5 text-sm leading-relaxed text-gray-400">{project.description}</p>
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {project.stack.map((tech) => (
+              <li
+                key={tech}
+                className="rounded-full border border-accent/25 bg-accent/5 px-2.5 py-1 text-[11px] font-medium uppercase tracking-wider text-accent/90"
+              >
+                {tech}
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-auto flex flex-wrap items-center gap-3 pt-6">
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-yellow-300 hover:shadow-[0_10px_30px_rgba(255,193,7,0.35)]"
+            >
+              <ExternalLinkIcon className="h-3.5 w-3.5" />
+              Live Demo
+            </a>
+            <button
+              type="button"
+              onClick={() => onOpen(project)}
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white transition-all duration-300 hover:border-accent hover:text-accent"
+            >
+              <ExpandIcon className="h-3.5 w-3.5" />
+              Screenshots
+            </button>
+          </div>
         </div>
-      </div>
+      </article>
+    </Reveal>
+  );
+}
+
+/** Small labelled divider used for "Top Projects" / "More Projects". */
+function SectionLabel({ title, note, star = false }: { title: string; note: string; star?: boolean }) {
+  return (
+    <div className="flex items-center gap-4">
+      {star ? <StarIcon className="h-4 w-4 text-accent" /> : null}
+      <h3 className="font-display text-xl font-bold text-white">{title}</h3>
+      <span aria-hidden="true" className="h-px flex-1 bg-white/10" />
+      <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-gray-500">
+        {note}
+      </span>
     </div>
   );
 }
 
 export default function Projects() {
-  const [lightbox, setLightbox] = useState<LightboxState | null>(null);
+  const [selected, setSelected] = useState<Project | null>(null);
+  const [slide, setSlide] = useState(0);
 
-  const openGallery = useCallback(
-    (project: Project, index = 0) => setLightbox({ project, index }),
-    [],
+  const featured = PROJECTS.filter((p) => p.featured);
+  const regular = PROJECTS.filter((p) => !p.featured);
+
+  const openProject = useCallback((project: Project) => {
+    setSelected(project);
+    setSlide(0);
+  }, []);
+
+  const close = useCallback(() => setSelected(null), []);
+
+  const galleryCount = selected?.gallery.length ?? 0;
+  const nextSlide = useCallback(
+    () => setSlide((s) => (s + 1) % galleryCount),
+    [galleryCount],
   );
-  const closeGallery = useCallback(() => setLightbox(null), []);
-  const navigate = useCallback(
-    (index: number) => setLightbox((s) => (s ? { ...s, index } : s)),
-    [],
+  const prevSlide = useCallback(
+    () => setSlide((s) => (s - 1 + galleryCount) % galleryCount),
+    [galleryCount],
   );
+
+  // Lightbox: Escape / arrow keys, body scroll lock.
+  useEffect(() => {
+    if (!selected) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+      if (e.key === "ArrowRight") nextSlide();
+      if (e.key === "ArrowLeft") prevSlide();
+    };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [selected, close, nextSlide, prevSlide]);
+
+  // Touch swipe for the slider.
+  const touchX = { current: 0 };
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchX.current = e.touches[0].clientX;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    if (Math.abs(dx) > 48) (dx < 0 ? nextSlide : prevSlide)();
+  };
 
   return (
     <section id="projects" className="relative overflow-hidden py-28">
@@ -205,82 +211,173 @@ export default function Projects() {
           />
         </Reveal>
 
-        {/* Cards */}
-        <div className="mt-12 grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-3">
-          {PROJECTS.map((project, i) => (
-            <Reveal key={project.id} delay={i * 130} className="h-full">
-              <article className="group flex h-full flex-col rounded-lg border border-white/5 bg-white/[0.015] p-4 transition-colors duration-300 hover:border-accent/20 sm:p-5">
-                <button
-                  type="button"
-                  onClick={() => openGallery(project)}
-                  aria-label={`Open ${project.title} screenshots gallery`}
-                  className="relative block w-full cursor-pointer overflow-hidden rounded-md border border-white/10 bg-neutral-900 text-left transition-all duration-300 group-hover:border-accent/50 group-hover:shadow-[0_18px_50px_rgba(255,193,7,0.12)] focus-visible:outline-2 focus-visible:outline-accent"
-                >
-                  <SmartImage
-                    src={project.gallery[0]}
-                    alt={`${project.title} website screenshot`}
-                    label={project.title}
-                    className="aspect-[3/2] w-full"
-                    imgClassName="transition-transform duration-700 ease-out group-hover:scale-110"
-                  />
-                  <span className="absolute inset-0 flex flex-col items-center justify-center gap-2.5 bg-black/55 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <span className="flex h-14 w-14 items-center justify-center rounded-full border border-accent bg-black/70 text-accent transition-transform duration-300 group-hover:scale-110">
-                      <ExpandIcon className="h-5 w-5" />
-                    </span>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white">
-                      View Screens
-                    </span>
-                  </span>
-                  <span className="absolute right-2.5 top-2.5 rounded-full bg-black/70 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-accent backdrop-blur">
-                    {project.gallery.length} Screens
-                  </span>
-                </button>
-
-                <h3 className="mt-5 font-display text-lg font-bold text-white">
-                  {project.title}{" "}
-                  <span className="ml-1 text-sm font-medium text-accent">(Click on Image)</span>
-                </h3>
-                <p className="mt-2.5 text-sm leading-relaxed text-gray-400">
-                  {project.description}
-                </p>
-                <ul className="mt-4 flex flex-wrap gap-2">
-                  {project.stack.map((tech) => (
-                    <li
-                      key={tech}
-                      className="rounded-full border border-accent/25 bg-accent/5 px-2.5 py-1 text-[11px] font-medium uppercase tracking-wider text-accent/90"
-                    >
-                      {tech}
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Actions */}
-                <div className="mt-auto flex flex-wrap items-center gap-3 pt-6">
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-yellow-300 hover:shadow-[0_10px_30px_rgba(255,193,7,0.35)]"
-                  >
-                    Live Demo
-                    <ExternalLinkIcon className="h-3.5 w-3.5" />
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => openGallery(project)}
-                    className="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-gray-300 transition-all duration-300 hover:border-accent hover:text-accent"
-                  >
-                    Screenshots
-                  </button>
-                </div>
-              </article>
+        {/* Top / featured projects */}
+        {featured.length > 0 ? (
+          <div className="mt-14">
+            <Reveal>
+              <SectionLabel
+                star
+                title="Top Projects"
+                note={`${featured.length} Featured`}
+              />
             </Reveal>
-          ))}
-        </div>
+
+            {featured.length === 1 ? (
+              <div className="mt-8">
+                <ProjectCard project={featured[0]} index={0} onOpen={openProject} spotlight />
+              </div>
+            ) : (
+              <div className={`mt-8 grid grid-cols-1 gap-8 ${gridClassFor(featured.length)}`}>
+                {featured.map((project, i) => (
+                  <ProjectCard key={project.id} project={project} index={i} onOpen={openProject} />
+                ))}
+              </div>
+            )}
+          </div>
+        ) : null}
+
+        {/* Remaining projects */}
+        {regular.length > 0 ? (
+          <div className={featured.length > 0 ? "mt-20" : "mt-14"}>
+            <Reveal>
+              <SectionLabel title="More Projects" note={`${regular.length} in archive`} />
+            </Reveal>
+            <div
+              className={`mt-8 grid grid-cols-1 gap-8 ${gridClassFor(regular.length)} ${
+                regular.length === 1 ? "md:max-w-2xl" : ""
+              }`}
+            >
+              {regular.map((project, i) => (
+                <ProjectCard key={project.id} project={project} index={i} onOpen={openProject} />
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
 
-      {lightbox ? (
-        <GalleryLightbox state={lightbox} onClose={closeGallery} onNavigate={navigate} />
+      {/* Screenshot slider lightbox */}
+      {selected ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${selected.title} screenshot slider`}
+          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm sm:p-8"
+          onClick={close}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
+          <div
+            className="relative w-full max-w-5xl animate-pop-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Top bar */}
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <h3 className="truncate font-display text-lg font-bold text-white sm:text-xl">
+                  {selected.title}
+                </h3>
+                <p className="text-xs text-gray-500">
+                  Screenshot {slide + 1} of {selected.gallery.length}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <a
+                  href={selected.liveUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hidden items-center gap-2 rounded-full bg-accent px-5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-black transition-colors hover:bg-yellow-300 sm:inline-flex"
+                >
+                  <ExternalLinkIcon className="h-3.5 w-3.5" />
+                  Live Demo
+                </a>
+                <button
+                  type="button"
+                  onClick={close}
+                  aria-label="Close slider"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/15 text-white transition-all duration-300 hover:rotate-90 hover:border-accent hover:text-accent"
+                >
+                  <CloseIcon className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Slides */}
+            <div className="relative overflow-hidden rounded-lg border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
+              <div
+                className="flex transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                style={{ transform: `translateX(-${slide * 100}%)` }}
+              >
+                {selected.gallery.map((img, i) => (
+                  <SmartImage
+                    key={img}
+                    src={img}
+                    alt={`${selected.title} screenshot ${i + 1}`}
+                    label={`${selected.title} — screen ${i + 1}`}
+                    className="aspect-[3/2] w-full shrink-0"
+                  />
+                ))}
+              </div>
+
+              {selected.gallery.length > 1 ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={prevSlide}
+                    aria-label="Previous screenshot"
+                    className="absolute left-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-accent hover:text-accent sm:left-4"
+                  >
+                    <ChevronLeftIcon className="h-5 w-5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={nextSlide}
+                    aria-label="Next screenshot"
+                    className="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-accent hover:text-accent sm:right-4"
+                  >
+                    <ChevronRightIcon className="h-5 w-5" />
+                  </button>
+                </>
+              ) : null}
+            </div>
+
+            {/* Thumbnails + counter */}
+            <div className="mt-5 flex items-center justify-center gap-3 sm:gap-4">
+              {selected.gallery.map((img, i) => (
+                <button
+                  key={img}
+                  type="button"
+                  onClick={() => setSlide(i)}
+                  aria-label={`Go to screenshot ${i + 1}`}
+                  className={`overflow-hidden rounded-md border-2 transition-all duration-300 ${
+                    i === slide
+                      ? "border-accent opacity-100"
+                      : "border-transparent opacity-45 hover:opacity-80"
+                  }`}
+                >
+                  <SmartImage
+                    src={img}
+                    alt=""
+                    label={`Screen ${i + 1}`}
+                    className="h-14 w-20 sm:h-16 sm:w-24"
+                  />
+                </button>
+              ))}
+              <span className="ml-2 font-display text-xs font-semibold tracking-[0.3em] text-gray-500">
+                {String(slide + 1).padStart(2, "0")} / {String(selected.gallery.length).padStart(2, "0")}
+              </span>
+            </div>
+
+            <a
+              href={selected.liveUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mx-auto mt-5 flex w-fit items-center gap-2 rounded-full bg-accent px-5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-black transition-colors hover:bg-yellow-300 sm:hidden"
+            >
+              <ExternalLinkIcon className="h-3.5 w-3.5" />
+              Live Demo
+            </a>
+          </div>
+        </div>
       ) : null}
     </section>
   );
