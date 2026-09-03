@@ -91,6 +91,17 @@ export function ChevronDownIcon(props: IconProps) {
   );
 }
 
+/** Arrow leaving a box — external link. */
+export function ExternalLinkIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props} aria-hidden="true">
+      <path d="M14 4h6v6" />
+      <path d="M20 4 11 13" />
+      <path d="M19 13.5V18a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4.5" />
+    </svg>
+  );
+}
+
 export const CONTACT_ICONS = {
   signpost: SignpostIcon,
   phone: PhoneIcon,
