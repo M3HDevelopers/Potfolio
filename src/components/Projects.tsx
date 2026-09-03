@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { PROJECTS, type Project } from "../data";
+import type { Project } from "../data";
+import { useContent } from "../store/content";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -14,7 +15,7 @@ import SmartImage from "./SmartImage";
 
 /**
  * Count-safe grid classes: layout never breaks whether 1, 2, 3 or more
- * projects are marked as featured from the admin panel later.
+ * projects are marked as featured from the admin panel.
  */
 function gridClassFor(count: number) {
   if (count <= 1) return "";
@@ -61,9 +62,7 @@ function ProjectCard({ project, index, onOpen, spotlight = false }: CardProps) {
             alt={`${project.title} website screenshot`}
             label={project.title}
             className={
-              spotlight
-                ? "aspect-[16/10] w-full md:aspect-auto md:h-full"
-                : "aspect-[3/2] w-full"
+              spotlight ? "aspect-[16/10] w-full md:aspect-auto md:h-full" : "aspect-[3/2] w-full"
             }
             imgClassName="transition-transform duration-700 ease-out group-hover:scale-110"
           />
@@ -127,19 +126,20 @@ function SectionLabel({ title, note, star = false }: { title: string; note: stri
       {star ? <StarIcon className="h-4 w-4 text-accent" /> : null}
       <h3 className="font-display text-xl font-bold text-white">{title}</h3>
       <span aria-hidden="true" className="h-px flex-1 bg-white/10" />
-      <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-gray-500">
-        {note}
-      </span>
+      <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-gray-500">{note}</span>
     </div>
   );
 }
 
 export default function Projects() {
+  const { content } = useContent();
+  const allProjects = content.projects;
+
   const [selected, setSelected] = useState<Project | null>(null);
   const [slide, setSlide] = useState(0);
 
-  const featured = PROJECTS.filter((p) => p.featured);
-  const regular = PROJECTS.filter((p) => !p.featured);
+  const featured = allProjects.filter((p) => p.featured);
+  const regular = allProjects.filter((p) => !p.featured);
 
   const openProject = useCallback((project: Project) => {
     setSelected(project);
@@ -149,10 +149,7 @@ export default function Projects() {
   const close = useCallback(() => setSelected(null), []);
 
   const galleryCount = selected?.gallery.length ?? 0;
-  const nextSlide = useCallback(
-    () => setSlide((s) => (s + 1) % galleryCount),
-    [galleryCount],
-  );
+  const nextSlide = useCallback(() => setSlide((s) => (s + 1) % galleryCount), [galleryCount]);
   const prevSlide = useCallback(
     () => setSlide((s) => (s - 1 + galleryCount) % galleryCount),
     [galleryCount],
@@ -185,6 +182,9 @@ export default function Projects() {
     if (Math.abs(dx) > 48) (dx < 0 ? nextSlide : prevSlide)();
   };
 
+  // Keep the modal sized to the viewport so screenshots never overflow the screen.
+  const modalMaxW = Math.round(Math.min(1024, (window.innerHeight - 250) * 1.5));
+
   return (
     <section id="projects" className="relative overflow-hidden py-28">
       <div
@@ -215,11 +215,7 @@ export default function Projects() {
         {featured.length > 0 ? (
           <div className="mt-14">
             <Reveal>
-              <SectionLabel
-                star
-                title="Top Projects"
-                note={`${featured.length} Featured`}
-              />
+              <SectionLabel star title="Top Projects" note={`${featured.length} Featured`} />
             </Reveal>
 
             {featured.length === 1 ? (
@@ -261,26 +257,23 @@ export default function Projects() {
           role="dialog"
           aria-modal="true"
           aria-label={`${selected.title} screenshot slider`}
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm sm:p-8"
+          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm sm:p-6"
           onClick={close}
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
-          {/*
-            Width is derived from the viewport height (1.5 = 3:2 aspect ratio)
-            so the screenshot + header + thumbnails always fit on screen.
-          */}
           <div
-            className="relative w-[min(100%,calc((88vh-12rem)*1.5))] max-w-4xl animate-pop-in"
+            className="w-full animate-pop-in"
+            style={{ maxWidth: `${modalMaxW}px` }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Top bar */}
-            <div className="mb-4 flex items-center justify-between gap-4">
+            <div className="mb-3 flex items-center justify-between gap-4">
               <div className="min-w-0">
-                <h3 className="truncate font-display text-lg font-bold text-white sm:text-xl">
+                <h3 className="truncate font-display text-base font-bold text-white sm:text-lg">
                   {selected.title}
                 </h3>
-                <p className="text-xs text-gray-500">
+                <p className="text-[11px] text-gray-500">
                   Screenshot {slide + 1} of {selected.gallery.length}
                 </p>
               </div>
@@ -289,7 +282,7 @@ export default function Projects() {
                   href={selected.liveUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="hidden items-center gap-2 rounded-full bg-accent px-5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-black transition-colors hover:bg-yellow-300 sm:inline-flex"
+                  className="hidden items-center gap-2 rounded-full bg-accent px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-black transition-colors hover:bg-yellow-300 sm:inline-flex"
                 >
                   <ExternalLinkIcon className="h-3.5 w-3.5" />
                   Live Demo
@@ -313,7 +306,7 @@ export default function Projects() {
               >
                 {selected.gallery.map((img, i) => (
                   <SmartImage
-                    key={img}
+                    key={`${img}-${i}`}
                     src={img}
                     alt={`${selected.title} screenshot ${i + 1}`}
                     label={`${selected.title} — screen ${i + 1}`}
@@ -328,7 +321,7 @@ export default function Projects() {
                     type="button"
                     onClick={prevSlide}
                     aria-label="Previous screenshot"
-                    className="absolute left-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-accent hover:text-accent sm:left-4"
+                    className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-accent hover:text-accent sm:left-4"
                   >
                     <ChevronLeftIcon className="h-5 w-5" />
                   </button>
@@ -336,7 +329,7 @@ export default function Projects() {
                     type="button"
                     onClick={nextSlide}
                     aria-label="Next screenshot"
-                    className="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-accent hover:text-accent sm:right-4"
+                    className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-accent hover:text-accent sm:right-4"
                   >
                     <ChevronRightIcon className="h-5 w-5" />
                   </button>
@@ -345,10 +338,10 @@ export default function Projects() {
             </div>
 
             {/* Thumbnails + counter */}
-            <div className="mt-5 flex items-center justify-center gap-3 sm:gap-4">
+            <div className="mt-4 flex items-center justify-center gap-3 sm:gap-4">
               {selected.gallery.map((img, i) => (
                 <button
-                  key={img}
+                  key={`${img}-${i}`}
                   type="button"
                   onClick={() => setSlide(i)}
                   aria-label={`Go to screenshot ${i + 1}`}
@@ -362,7 +355,7 @@ export default function Projects() {
                     src={img}
                     alt=""
                     label={`Screen ${i + 1}`}
-                    className="h-14 w-20 sm:h-16 sm:w-24"
+                    className="h-12 w-16 sm:h-14 sm:w-20"
                   />
                 </button>
               ))}
@@ -375,7 +368,7 @@ export default function Projects() {
               href={selected.liveUrl}
               target="_blank"
               rel="noreferrer"
-              className="mx-auto mt-5 flex w-fit items-center gap-2 rounded-full bg-accent px-5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-black transition-colors hover:bg-yellow-300 sm:hidden"
+              className="mx-auto mt-4 flex w-fit items-center gap-2 rounded-full bg-accent px-5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-black transition-colors hover:bg-yellow-300 sm:hidden"
             >
               <ExternalLinkIcon className="h-3.5 w-3.5" />
               Live Demo

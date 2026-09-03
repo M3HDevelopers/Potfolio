@@ -1,17 +1,33 @@
-import { BASIC_INFO, INFO_GRID, PROFILE_IMAGE, SKILLS } from "../data";
+import { useContent } from "../store/content";
 import { useInView } from "../hooks/useInView";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 
+/** Words wrapped in [x]…[/x] render in the accent color. */
+function renderHeadline(text: string) {
+  const parts = text.split(/\[x\]|\[\/x\]/g);
+  return parts.map((part, i) =>
+    i % 2 === 1 ? (
+      <span key={i} className="text-accent">
+        {part}
+      </span>
+    ) : (
+      <span key={i}>{part}</span>
+    ),
+  );
+}
+
 function SkillBars() {
+  const { content } = useContent();
+  const skills = content.about.skills;
   const { ref, inView } = useInView<HTMLDivElement>(0.3);
 
   return (
     <div ref={ref} className="mt-12">
       <h3 className="font-display text-xl font-semibold text-white">Skills</h3>
       <div className="mt-6 space-y-6">
-        {SKILLS.map((skill, i) => (
-          <div key={skill.name}>
+        {skills.map((skill, i) => (
+          <div key={`${skill.name}-${i}`}>
             <div className="mb-2 flex items-center justify-between text-sm font-medium text-white">
               <span>{skill.name}</span>
               <span className="text-accent">{skill.level}%</span>
@@ -33,6 +49,9 @@ function SkillBars() {
 }
 
 export default function About() {
+  const { content } = useContent();
+  const about = content.about;
+
   return (
     <section id="about" className="relative overflow-hidden py-28">
       <div
@@ -51,9 +70,12 @@ export default function About() {
                 aria-hidden="true"
                 className="absolute -inset-3 animate-spin-slow rounded-full border border-dashed border-white/10"
               />
-              <div aria-hidden="true" className="absolute inset-0 translate-x-4 translate-y-4 rounded-full bg-accent" />
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 translate-x-4 translate-y-4 rounded-full bg-accent"
+              />
               <img
-                src={PROFILE_IMAGE}
+                src={about.profileImage}
                 alt="Portrait of Muzammil Ahmed"
                 loading="lazy"
                 onError={(e) => {
@@ -64,9 +86,9 @@ export default function About() {
             </div>
 
             <ul className="mt-12">
-              {BASIC_INFO.map((row) => (
+              {about.basicInfo.map((row, i) => (
                 <li
-                  key={row.label}
+                  key={`${row.label}-${i}`}
                   className="group flex items-center justify-between gap-6 border-b border-white/5 py-3.5 transition-colors hover:border-accent/30"
                 >
                   <span className="text-sm font-bold text-white">{row.label}</span>
@@ -83,25 +105,20 @@ export default function About() {
           {/* Right — bio & info */}
           <Reveal delay={150}>
             <h3 className="font-display text-2xl font-bold leading-snug text-white sm:text-[1.7rem]">
-              Professional FullStack Developer with{" "}
-              <span className="text-accent">Three Year</span> of Experience
+              {renderHeadline(about.headline)}
             </h3>
 
-            <p className="mt-6 leading-relaxed text-gray-400">
-              I am Muzammil Ahmed, a Senior MERN Stack Web Developer from Hyderabad, Pakistan. I
-              craft fast, scalable and pixel-perfect web applications with React.js on the front
-              end and Node.js, Express &amp; MongoDB on the back end — from REST APIs and secure
-              authentication flows to real-time features and cloud deployments.
-            </p>
-            <p className="mt-4 leading-relaxed text-gray-400">
-              Over the years I have shipped production platforms for e-commerce, food delivery and
-              SaaS analytics, always obsessing over clean architecture, performance budgets and
-              delightful user experiences.
-            </p>
+            {about.bioParagraphs.map((para, i) =>
+              para.trim() ? (
+                <p key={i} className="mt-6 leading-relaxed text-gray-400 first-of-type:mt-6">
+                  {para}
+                </p>
+              ) : null,
+            )}
 
             <dl className="mt-10 grid grid-cols-1 gap-x-10 gap-y-7 sm:grid-cols-2">
-              {INFO_GRID.map((item) => (
-                <div key={item.label} className="border-l-2 border-accent/60 pl-4">
+              {about.infoGrid.map((item, i) => (
+                <div key={`${item.label}-${i}`} className="border-l-2 border-accent/60 pl-4">
                   <dt className="text-sm font-bold uppercase tracking-wider text-white">
                     {item.label}
                   </dt>
@@ -111,19 +128,17 @@ export default function About() {
             </dl>
 
             <div className="mt-12 flex flex-wrap items-center gap-x-10 gap-y-6">
-              <p className="font-display leading-none">
-                <span className="text-5xl font-extrabold text-accent">30+</span>
-                <span className="ml-3 text-2xl font-bold text-white">
-                  Projects
-                  <br />
-                  completed
+              <p className="flex items-center font-display leading-none">
+                <span className="text-5xl font-extrabold text-accent">{about.statNumber}</span>
+                <span className="ml-3 max-w-[11rem] text-2xl font-bold leading-tight text-white">
+                  {about.statLabel}
                 </span>
               </p>
               <a
                 href="#projects"
                 className="rounded-full bg-accent px-6 py-2 text-xs font-bold uppercase tracking-[0.22em] text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-yellow-300 hover:shadow-[0_12px_40px_rgba(255,193,7,0.35)]"
               >
-                Visit
+                {about.buttonText}
               </a>
             </div>
           </Reveal>

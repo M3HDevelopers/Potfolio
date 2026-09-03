@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CONTACT_ITEMS } from "../data";
+import { useContent } from "../store/content";
 import { CheckIcon, CONTACT_ICONS, PlaneIcon } from "./Icons";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
@@ -12,6 +12,7 @@ const EMPTY_FORM: FormData = { name: "", email: "", subject: "", message: "" };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function ContactForm() {
+  const { addMessage } = useContent();
   const [form, setForm] = useState<FormData>(EMPTY_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<Status>("idle");
@@ -43,10 +44,12 @@ function ContactForm() {
     setErrors(errs);
     if (Object.values(errs).some(Boolean)) return;
 
-    // Simulated send — plug your backend / admin-panel API in here later.
+    const submission = { ...form };
     setStatus("sending");
     timers.current.push(
       window.setTimeout(() => {
+        // Saved into the admin panel inbox (backend API plugs in here later).
+        addMessage(submission);
         setStatus("sent");
         setForm(EMPTY_FORM);
         timers.current.push(window.setTimeout(() => setStatus("idle"), 6000));
@@ -145,7 +148,7 @@ function ContactForm() {
       {status === "sent" ? (
         <div className="mt-6 flex items-center gap-3 rounded-md border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-accent">
           <CheckIcon className="h-4 w-4 shrink-0" />
-          Message sent! I&apos;ll get back to you within 24 hours.
+          Message sent! It&apos;s now in my inbox — I&apos;ll reply within 24 hours.
         </div>
       ) : null}
 
@@ -174,6 +177,10 @@ function ContactForm() {
 }
 
 export default function Contact() {
+  const { content } = useContent();
+  const { contactItems } = content;
+  const { email, copyrightName } = content.settings;
+
   const scrollToForm = () => {
     document.getElementById("contact-form")?.scrollIntoView({ behavior: "smooth", block: "center" });
     window.setTimeout(
@@ -201,8 +208,8 @@ export default function Contact() {
 
         {/* Contact info cards */}
         <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
-          {CONTACT_ITEMS.map((item, i) => {
-            const Icon = CONTACT_ICONS[item.icon];
+          {contactItems.map((item, i) => {
+            const Icon = CONTACT_ICONS[item.icon] ?? CONTACT_ICONS.globe;
             const inner = (
               <span className="flex flex-col items-center gap-5 text-center">
                 <span className="flex h-24 w-24 items-center justify-center rounded-full border border-transparent bg-[#1a1a1a] text-accent shadow-[0_10px_30px_rgba(0,0,0,0.5)] transition-all duration-300 group-hover:-translate-y-1 group-hover:border-accent group-hover:shadow-[0_10px_40px_rgba(255,193,7,0.3)] sm:h-28 sm:w-28">
@@ -219,7 +226,7 @@ export default function Contact() {
               </span>
             );
             return (
-              <Reveal key={item.title} delay={i * 110} className="text-center">
+              <Reveal key={`${item.title}-${i}`} delay={i * 110} className="text-center">
                 {item.href ? (
                   <a href={item.href} className="group inline-block" aria-label={item.title}>
                     {inner}
@@ -273,10 +280,10 @@ export default function Contact() {
                 <p className="text-sm text-gray-500">
                   Prefer writing directly?{" "}
                   <a
-                    href="mailto:muzammil.ahmed.dev@gmail.com"
+                    href={`mailto:${email}`}
                     className="font-semibold text-accent underline decoration-accent/40 underline-offset-4 transition-colors hover:text-yellow-300"
                   >
-                    muzammil.ahmed.dev@gmail.com
+                    {email}
                   </a>
                 </p>
               </div>
@@ -302,7 +309,7 @@ export default function Contact() {
         <footer className="mt-20 border-t border-white/5 pt-8 pb-2 text-center">
           <p className="text-xs text-gray-500 sm:text-sm">
             Copyright ©2026 All rights reserved |{" "}
-            <span className="text-gray-400">Muzammil Ahmed</span>
+            <span className="text-gray-400">{copyrightName}</span>
           </p>
         </footer>
       </div>
