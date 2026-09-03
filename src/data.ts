@@ -65,6 +65,163 @@ export const PROJECTS: Project[] = [
       "A SaaS analytics dashboard with interactive charts, JWT role-based authentication, team workspaces and automated CSV / PDF reporting built on MongoDB Atlas aggregation pipelines.",
     stack: ["React.js", "Chart.js", "Node.js", "Express", "MongoDB Atlas"],
   },
+  {
+    id: "travelnest",
+    title: "TravelNest Bookings",
+    featured: true,
+    gallery: [
+      "https://picsum.photos/seed/travelnest-screen-1/1200/800",
+      "https://picsum.photos/seed/travelnest-screen-2/1200/800",
+      "https://picsum.photos/seed/travelnest-screen-3/1200/800",
+    ],
+    liveUrl: "https://example.com/projects/travelnest-bookings",
+    description:
+      "A travel booking platform with destination search, smart filters, secure payments and a full agency dashboard for managing tours, bookings and payouts.",
+    stack: ["React.js", "Node.js", "Express", "MongoDB", "Razorpay"],
+  },
+  {
+    id: "medicocare",
+    title: "MedicoCare Appointments",
+    gallery: [
+      "https://picsum.photos/seed/medicocare-screen-1/1200/800",
+      "https://picsum.photos/seed/medicocare-screen-2/1200/800",
+      "https://picsum.photos/seed/medicocare-screen-3/1200/800",
+    ],
+    liveUrl: "https://example.com/projects/medicocare-appointments",
+    description:
+      "A clinic management system with doctor profiles, real-time slot booking, patient records and automated SMS reminders built on a REST API.",
+    stack: ["React.js", "Node.js", "Express", "MongoDB", "Twilio"],
+  },
+  {
+    id: "eduspark",
+    title: "EduSpark LMS",
+    gallery: [
+      "https://picsum.photos/seed/eduspark-screen-1/1200/800",
+      "https://picsum.photos/seed/eduspark-screen-2/1200/800",
+      "https://picsum.photos/seed/eduspark-screen-3/1200/800",
+    ],
+    liveUrl: "https://example.com/projects/eduspark-lms",
+    description:
+      "An e-learning platform with video courses, quizzes, progress tracking and auto-generated certificates — videos streamed securely from AWS S3.",
+    stack: ["React.js", "Redux Toolkit", "Node.js", "MongoDB", "AWS S3"],
+  },
+  {
+    id: "cryptopulse",
+    title: "CryptoPulse Tracker",
+    gallery: [
+      "https://picsum.photos/seed/cryptopulse-screen-1/1200/800",
+      "https://picsum.photos/seed/cryptopulse-screen-2/1200/800",
+      "https://picsum.photos/seed/cryptopulse-screen-3/1200/800",
+    ],
+    liveUrl: "https://example.com/projects/cryptopulse-tracker",
+    description:
+      "A crypto portfolio tracker with live WebSocket prices, interactive candlestick charts, watchlists and custom price alerts.",
+    stack: ["React.js", "Chart.js", "Node.js", "WebSockets", "MongoDB"],
+  },
+  {
+    id: "fittrack",
+    title: "FitTrack Gym Manager",
+    gallery: [
+      "https://picsum.photos/seed/fittrack-screen-1/1200/800",
+      "https://picsum.photos/seed/fittrack-screen-2/1200/800",
+      "https://picsum.photos/seed/fittrack-screen-3/1200/800",
+    ],
+    liveUrl: "https://example.com/projects/fittrack-gym",
+    description:
+      "A gym membership app with trainer booking, workout & diet plans, progress photos and membership renewal reminders.",
+    stack: ["React.js", "Node.js", "Express", "MongoDB"],
+  },
+  {
+    id: "estatehub",
+    title: "EstateHub Realty",
+    gallery: [
+      "https://picsum.photos/seed/estatehub-screen-1/1200/800",
+      "https://picsum.photos/seed/estatehub-screen-2/1200/800",
+      "https://picsum.photos/seed/estatehub-screen-3/1200/800",
+    ],
+    liveUrl: "https://example.com/projects/estatehub-realty",
+    description:
+      "A real-estate portal with map-based property search, virtual tours, an agent CRM and a built-in EMI / loan calculator.",
+    stack: ["React.js", "Mapbox", "Node.js", "Express", "MongoDB"],
+  },
+  {
+    id: "taskflow",
+    title: "TaskFlow Manager",
+    gallery: [
+      "https://picsum.photos/seed/taskflow-screen-1/1200/800",
+      "https://picsum.photos/seed/taskflow-screen-2/1200/800",
+      "https://picsum.photos/seed/taskflow-screen-3/1200/800",
+    ],
+    liveUrl: "https://example.com/projects/taskflow-manager",
+    description:
+      "A Kanban project-management tool with drag-and-drop boards, sprint planning and real-time team collaboration over Socket.io.",
+    stack: ["React.js", "Socket.io", "Node.js", "MongoDB"],
+  },
+  {
+    id: "chatsphere",
+    title: "ChatSphere Messenger",
+    gallery: [
+      "https://picsum.photos/seed/chatsphere-screen-1/1200/800",
+      "https://picsum.photos/seed/chatsphere-screen-2/1200/800",
+      "https://picsum.photos/seed/chatsphere-screen-3/1200/800",
+    ],
+    liveUrl: "https://example.com/projects/chatsphere-messenger",
+    description:
+      "A real-time chat app with group rooms, typing indicators, read receipts and media sharing — messages delivered instantly via WebSockets.",
+    stack: ["React.js", "Socket.io", "Node.js", "MongoDB"],
+  },
+  {
+    id: "recipebox",
+    title: "RecipeBox Community",
+    gallery: [
+      "https://picsum.photos/seed/recipebox-screen-1/1200/800",
+      "https://picsum.photos/seed/recipebox-screen-2/1200/800",
+      "https://picsum.photos/seed/recipebox-screen-3/1200/800",
+    ],
+    liveUrl: "https://example.com/projects/recipebox-community",
+    description:
+      "A recipe-sharing community with step-by-step cook mode, weekly meal planning and auto-generated grocery lists.",
+    stack: ["React.js", "Node.js", "Express", "MongoDB"],
+  },
+  {
+    id: "autogarage",
+    title: "AutoGarage Rentals",
+    gallery: [
+      "https://picsum.photos/seed/autogarage-screen-1/1200/800",
+      "https://picsum.photos/seed/autogarage-screen-2/1200/800",
+      "https://picsum.photos/seed/autogarage-screen-3/1200/800",
+    ],
+    liveUrl: "https://example.com/projects/autogarage-rentals",
+    description:
+      "A car-rental platform with date-based availability, dynamic pricing, GPS vehicle tracking and automated PDF invoices.",
+    stack: ["React.js", "Node.js", "Express", "MongoDB", "Stripe"],
+  },
+  {
+    id: "hirelink",
+    title: "HireLink Jobs",
+    gallery: [
+      "https://picsum.photos/seed/hirelink-screen-1/1200/800",
+      "https://picsum.photos/seed/hirelink-screen-2/1200/800",
+      "https://picsum.photos/seed/hirelink-screen-3/1200/800",
+    ],
+    liveUrl: "https://example.com/projects/hirelink-jobs",
+    description:
+      "A job board with full-text search, application tracking, resume parsing and an employer analytics dashboard.",
+    stack: ["React.js", "Node.js", "MongoDB", "Elasticsearch"],
+  },
+  {
+    id: "eventease",
+    title: "EventEase Tickets",
+    gallery: [
+      "https://picsum.photos/seed/eventease-screen-1/1200/800",
+      "https://picsum.photos/seed/eventease-screen-2/1200/800",
+      "https://picsum.photos/seed/eventease-screen-3/1200/800",
+    ],
+    liveUrl: "https://example.com/projects/eventease-tickets",
+    description:
+      "An event-ticketing platform with seat maps, QR-code check-in, instant ticket delivery and automated organizer payouts.",
+    stack: ["React.js", "Node.js", "Express", "MongoDB", "QR API"],
+  },
 ];
 
 export type Skill = { name: string; level: number };
