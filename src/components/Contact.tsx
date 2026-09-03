@@ -34,7 +34,7 @@ function ContactForm() {
     else if (!EMAIL_RE.test(form.email)) errs.email = "That email doesn't look right.";
     if (!form.subject.trim()) errs.subject = "A short subject helps me reply faster.";
     if (form.message.trim().length < 10)
-      errs.message = "Tell me a little more — at least 10 characters.";
+      errs.message = "Tell me a little more. At least 10 characters.";
     return errs;
   };
 
@@ -121,7 +121,7 @@ function ContactForm() {
           type="text"
           value={form.subject}
           onChange={update("subject")}
-          placeholder="Project inquiry — MERN web app"
+          placeholder="Project inquiry: MERN web app"
           className={inputClass(!!errors.subject)}
         />
         {errors.subject ? <p className="mt-1.5 text-xs text-red-400">{errors.subject}</p> : null}
@@ -148,7 +148,7 @@ function ContactForm() {
       {status === "sent" ? (
         <div className="mt-6 flex items-center gap-3 rounded-md border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-accent">
           <CheckIcon className="h-4 w-4 shrink-0" />
-          Message sent! It&apos;s now in my inbox — I&apos;ll reply within 24 hours.
+          Message sent! It&apos;s now in my inbox, and I&apos;ll reply within 24 hours.
         </div>
       ) : null}
 
@@ -279,12 +279,12 @@ export default function Contact() {
               </h3>
               <p className="mt-4 leading-relaxed text-gray-400">
                 Whether it&apos;s a brand-new MERN platform, a dashboard, or rescuing a stuck
-                project — drop a message and I&apos;ll personally get back to you.
+                project, drop a message and I&apos;ll personally get back to you.
               </p>
 
               <ul className="mt-8 space-y-4">
                 {[
-                  "Response within 24 hours — guaranteed",
+                  "Response within 24 hours, guaranteed",
                   "Free 30-minute consultation call",
                   "Remote-friendly, working worldwide from Pakistan",
                 ].map((point) => (

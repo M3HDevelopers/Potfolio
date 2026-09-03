@@ -309,7 +309,7 @@ export default function Projects() {
                     key={`${img}-${i}`}
                     src={img}
                     alt={`${selected.title} screenshot ${i + 1}`}
-                    label={`${selected.title} — screen ${i + 1}`}
+                    label={`${selected.title}, screen ${i + 1}`}
                     className="aspect-[3/2] w-full shrink-0"
                   />
                 ))}

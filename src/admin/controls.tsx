@@ -260,7 +260,7 @@ export function ImagePicker({
     setBusy(true);
     try {
       onChange(await fileToImage(file));
-      toast("Image ready — don't forget to Save");
+      toast("Image ready. Don't forget to Save");
     } catch {
       toast("Could not read that image file", "err");
     } finally {
@@ -333,13 +333,13 @@ export function VideoPicker({
     e.target.value = "";
     if (!file) return;
     if (file.size > 4 * 1024 * 1024) {
-      toast("Video too big (max 4MB) — paste a YouTube/Vimeo link instead", "err");
+      toast("Video too big (max 4MB). Paste a YouTube/Vimeo link instead", "err");
       return;
     }
     const reader = new FileReader();
     reader.onload = () => {
       onChange(String(reader.result));
-      toast("Video attached — don't forget to Save");
+      toast("Video attached. Don't forget to Save");
     };
     reader.readAsDataURL(file);
   };
@@ -414,13 +414,13 @@ export function ResumePicker({
     e.target.value = "";
     if (!file) return;
     if (file.size > 3 * 1024 * 1024) {
-      toast("Resume too big (max 3MB) for browser storage — use a Drive/Dropbox link", "err");
+      toast("Resume too big (max 3MB) for browser storage. Use a Drive/Dropbox link", "err");
       return;
     }
     const reader = new FileReader();
     reader.onload = () => {
       onChange({ fileName: file.name, data: String(reader.result) });
-      toast("Resume attached — don't forget to Save");
+      toast("Resume attached. Don't forget to Save");
     };
     reader.readAsDataURL(file);
   };
@@ -456,7 +456,7 @@ export function ResumePicker({
           </div>
         ) : (
           <div className="rounded-md border border-dashed border-white/20 px-4 py-3 text-xs text-gray-500">
-            No resume uploaded yet — the Resume card currently falls back to email.
+            No resume uploaded yet, so the Resume card currently falls back to email.
           </div>
         )}
         <input
@@ -871,7 +871,7 @@ export function OtpModal({
           ) : (
             <>
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-accent/80">
-                Demo mode — no email service yet
+                Demo mode: no email service yet
               </p>
               <p className="mt-1 font-display text-2xl font-extrabold tracking-[0.35em] text-accent">
                 {code}
@@ -890,7 +890,7 @@ export function OtpModal({
           maxLength={6}
           value={input}
           disabled={sending}
-          placeholder="——————"
+          placeholder="••••••"
           onChange={(e) => {
             setInput(e.target.value.replace(/\D/g, "").slice(0, 6));
             setError(false);
@@ -904,7 +904,7 @@ export function OtpModal({
         />
         {error ? (
           <p className="mt-2 text-xs text-red-400">
-            Incorrect code — check the demo banner above and try again.
+            Incorrect code. Check the demo banner above and try again.
           </p>
         ) : null}
 

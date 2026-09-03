@@ -140,7 +140,7 @@ export default function Testimonials() {
           </div>
         ) : (
           <p className="text-center text-sm text-gray-500">
-            No testimonials yet — add them from the admin panel.
+            No testimonials yet. Add them from the admin panel.
           </p>
         )}
       </div>

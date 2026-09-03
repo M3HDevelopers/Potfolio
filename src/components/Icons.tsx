@@ -175,6 +175,33 @@ export function PlayIcon(props: IconProps) {
   );
 }
 
+/** AI chip — processor with pins. */
+export function ChipIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props} aria-hidden="true">
+      <rect x="6.5" y="6.5" width="11" height="11" rx="1.5" />
+      <rect x="10" y="10" width="4" height="4" />
+      <path d="M9.5 3.5v3M14.5 3.5v3M9.5 17.5v3M14.5 17.5v3" />
+      <path d="M3.5 9.5h3M3.5 14.5h3M17.5 9.5h3M17.5 14.5h3" />
+    </svg>
+  );
+}
+
+/** Small robot head — robotics touch. */
+export function RobotIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props} aria-hidden="true">
+      <path d="M12 7.5V4.5" />
+      <circle cx="12" cy="3.4" r="1.1" />
+      <rect x="5" y="7.5" width="14" height="10" rx="2.5" />
+      <circle cx="9.3" cy="12.2" r="1" />
+      <circle cx="14.7" cy="12.2" r="1" />
+      <path d="M9.5 15h5" />
+      <path d="M2.8 11v3M21.2 11v3" />
+    </svg>
+  );
+}
+
 export const CONTACT_ICONS = {
   signpost: SignpostIcon,
   phone: PhoneIcon,

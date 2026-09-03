@@ -98,7 +98,7 @@ export const DEFAULT_CONTENT: SiteContent = {
   settings: {
     logoFirst: "Muzammil",
     logoSecond: "Ahmed",
-    sideSignature: "Muzammil Ahmed — 2026",
+    sideSignature: "Muzammil Ahmed • 2026",
     copyrightName: "Muzammil Ahmed",
     email: "muzammil.ahmed.dev@gmail.com",
     adminPassword: "admin123",
@@ -118,13 +118,13 @@ export const DEFAULT_CONTENT: SiteContent = {
     roleLine2: "A Senior MERN Stack Web Developer",
     buttonText: "My Works",
     buttonLink: "#projects",
-    orbitText: "MERN Stack Developer • React • Node • Mongo •",
+    orbitText: "MERN Stack Developer • React • Node • Mongo • AI • ML •",
   },
   about: {
     profileImage: PROFILE_IMAGE,
     headline: "Professional FullStack Developer with [x]Three Year[/x] of Experience",
     bioParagraphs: [
-      "I am Muzammil Ahmed, a Senior MERN Stack Web Developer from Hyderabad, Pakistan. I craft fast, scalable and pixel-perfect web applications with React.js on the front end and Node.js, Express & MongoDB on the back end — from REST APIs and secure authentication flows to real-time features and cloud deployments.",
+      "I am Muzammil Ahmed, a Senior MERN Stack Web Developer from Hyderabad, Pakistan. I craft fast, scalable and pixel-perfect web applications with React.js on the front end and Node.js, Express & MongoDB on the back end, handling everything from REST APIs and secure authentication flows to real-time features and cloud deployments.",
       "Over the years I have shipped production platforms for e-commerce, food delivery and SaaS analytics, always obsessing over clean architecture, performance budgets and delightful user experiences.",
     ],
     basicInfo: BASIC_INFO,

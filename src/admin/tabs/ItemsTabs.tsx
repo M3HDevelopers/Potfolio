@@ -46,7 +46,7 @@ function ReviewForm({
     <div className="space-y-5">
       <div className="flex items-center justify-between gap-4">
         <h2 className="font-display text-lg font-bold text-white">
-          {review.name ? `Edit — ${review.name}` : "New Review"}
+          {review.name ? `Edit: ${review.name}` : "New Review"}
         </h2>
         <button
           onClick={onCancel}
@@ -112,7 +112,7 @@ export function ReviewsTab() {
     <div>
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm text-gray-500">
-          <span className="font-bold text-white">{reviews.length}</span> reviews — the average
+          <span className="font-bold text-white">{reviews.length}</span> reviews. The average
           rating on the site updates automatically.
         </p>
         <button
@@ -211,7 +211,7 @@ function TestimonialForm({
     <div className="space-y-5">
       <div className="flex items-center justify-between gap-4">
         <h2 className="font-display text-lg font-bold text-white">
-          {testimonial.name ? `Edit — ${testimonial.name}` : "New Testimonial"}
+          {testimonial.name ? `Edit: ${testimonial.name}` : "New Testimonial"}
         </h2>
         <button
           onClick={onCancel}
@@ -317,7 +317,7 @@ export function TestimonialsTab() {
                 ) : null}
               </p>
               <p className="mt-0.5 truncate text-xs text-gray-500">
-                {t.project || "—"} · {t.duration} · {t.video ? "video attached ✓" : "no video yet"}
+                {t.project || "(no project)"} · {t.duration} · {t.video ? "video attached ✓" : "no video yet"}
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-2">

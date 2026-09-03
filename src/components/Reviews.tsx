@@ -16,7 +16,7 @@ export default function Reviews() {
   const safeIndex = count > 0 ? ((index % count) + count) % count : 0;
   const current = count > 0 ? reviews[safeIndex] : null;
 
-  const avg = count > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / count).toFixed(1) : "—";
+  const avg = count > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / count).toFixed(1) : "0.0";
   const platforms = Array.from(new Set(reviews.map((r) => r.platform).filter(Boolean)));
 
   const go = (dir: 1 | -1) => setIndex((i) => (i + dir + count) % count);
@@ -199,7 +199,7 @@ export default function Reviews() {
           </Reveal>
         ) : (
           <p className="text-center text-sm text-gray-500">
-            No reviews yet — add them from the admin panel.
+            No reviews yet. Add them from the admin panel.
           </p>
         )}
       </div>

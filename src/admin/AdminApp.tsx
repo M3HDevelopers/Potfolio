@@ -66,7 +66,7 @@ function Login({ onLogin }: { onLogin: () => void }) {
       return;
     }
     updateSection("settings", { ...content.settings, adminPassword: newPass });
-    toast("Password updated — log in with your new password");
+    toast("Password updated. Log in with your new password");
     setFpStep(0);
     setNewPass("");
     setConfirmPass("");
@@ -95,7 +95,7 @@ function Login({ onLogin }: { onLogin: () => void }) {
           {fpStep === 0
             ? "Enter your password to manage the website content."
             : fpStep === 1
-              ? "Enter your admin email — we'll send a 6-digit verification code to it."
+              ? "Enter your admin email. We'll send a 6-digit verification code to it."
               : fpStep === 2
                 ? "Check your email for the verification code."
                 : "OTP verified. Choose a strong new password below."}
@@ -130,7 +130,7 @@ function Login({ onLogin }: { onLogin: () => void }) {
                 )}
               </button>
             </div>
-            {error ? <p className="mt-2 text-xs text-red-400">Wrong password — try again.</p> : null}
+            {error ? <p className="mt-2 text-xs text-red-400">Wrong password. Please try again.</p> : null}
 
             <button
               type="submit"
@@ -148,7 +148,7 @@ function Login({ onLogin }: { onLogin: () => void }) {
             </button>
 
             <p className="mt-4 text-center text-[11px] text-gray-600">
-              Default password: <span className="text-gray-400">admin123</span> — change it in
+              Default password: <span className="text-gray-400">admin123</span>. Change it in
               Settings.
             </p>
           </form>
@@ -326,7 +326,7 @@ function AdminShell() {
           <div className="flex items-center justify-between gap-4 px-5 py-4 md:px-8">
             <div>
               <h1 className="font-display text-lg font-bold text-white">{titles[tab]}</h1>
-              <p className="text-[11px] text-gray-600">Changes save to this browser — export a backup from Settings.</p>
+              <p className="text-[11px] text-gray-600">Changes save to this browser. Export a backup from Settings.</p>
             </div>
             <div className="flex items-center gap-3">
               <a
