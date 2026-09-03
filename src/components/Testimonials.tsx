@@ -1,23 +1,36 @@
 import { useState } from "react";
-import { TESTIMONIALS, type Testimonial } from "../data";
+import type { Testimonial } from "../data";
+import { useContent } from "../store/content";
 import { CheckIcon, PlayIcon, StarIcon } from "./Icons";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 
+/** Detects YouTube / Vimeo links so they can be embedded as iframes. */
+function videoEmbed(url: string): { type: "iframe" | "video"; src: string } | null {
+  if (!url) return null;
+  const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{6,})/);
+  if (yt) return { type: "iframe", src: `https://www.youtube.com/embed/${yt[1]}` };
+  const vm = url.match(/vimeo\.com\/(\d+)/);
+  if (vm) return { type: "iframe", src: `https://player.vimeo.com/video/${vm[1]}` };
+  return { type: "video", src: url };
+}
+
 function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; index: number }) {
   const [playing, setPlaying] = useState(false);
+  const embed = videoEmbed(testimonial.video);
 
   return (
     <Reveal delay={index * 120} className="h-full">
       <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] transition-all duration-300 hover:-translate-y-1.5 hover:border-accent/40 hover:shadow-[0_22px_60px_rgba(255,193,7,0.1)]">
         {/* Video area */}
         <div className="relative aspect-video overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_30%_20%,#262626,#0a0a0a_75%)]">
-          {!playing ? (
+          {!playing || !embed ? (
             <button
               type="button"
-              onClick={() => setPlaying(true)}
+              onClick={() => embed && setPlaying(true)}
+              disabled={!embed}
               aria-label={`Play video testimonial from ${testimonial.name}`}
-              className="absolute inset-0 w-full cursor-pointer"
+              className="absolute inset-0 w-full cursor-pointer disabled:cursor-default"
             >
               <span
                 aria-hidden="true"
@@ -26,7 +39,13 @@ function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; ind
                 {testimonial.initials}
               </span>
               <span className="absolute inset-0 flex items-center justify-center">
-                <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent pl-1 text-black shadow-[0_0_45px_rgba(255,193,7,0.45)] transition-transform duration-300 group-hover:scale-110">
+                <span
+                  className={`flex h-16 w-16 items-center justify-center rounded-full pl-1 transition-transform duration-300 ${
+                    embed
+                      ? "bg-accent text-black shadow-[0_0_45px_rgba(255,193,7,0.45)] group-hover:scale-110"
+                      : "border border-white/20 text-gray-500"
+                  }`}
+                >
                   <PlayIcon className="h-7 w-7" />
                 </span>
               </span>
@@ -37,9 +56,17 @@ function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; ind
                 ▶ {testimonial.duration}
               </span>
             </button>
+          ) : embed.type === "iframe" ? (
+            <iframe
+              src={`${embed.src}?autoplay=1`}
+              title={`Video testimonial from ${testimonial.name}`}
+              className="h-full w-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
           ) : (
             <video
-              src={testimonial.video}
+              src={embed.src}
               controls
               autoPlay
               playsInline
@@ -57,26 +84,20 @@ function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; ind
               {[1, 2, 3, 4, 5].map((n) => (
                 <StarIcon
                   key={n}
-                  className={`h-4 w-4 ${
-                    n <= testimonial.rating ? "text-accent" : "text-gray-700"
-                  }`}
+                  className={`h-4 w-4 ${n <= testimonial.rating ? "text-accent" : "text-gray-700"}`}
                 />
               ))}
             </span>
-            <span className="font-display text-xs font-bold text-accent">
-              {testimonial.rating}.0
-            </span>
+            <span className="font-display text-xs font-bold text-accent">{testimonial.rating}.0</span>
           </div>
 
-          <blockquote className="mb-6 mt-4 text-sm italic leading-relaxed text-gray-400">
+          <blockquote className="mt-4 text-sm italic leading-relaxed text-gray-400">
             &ldquo;{testimonial.quote}&rdquo;
           </blockquote>
 
           <div className="mt-auto flex items-end justify-between gap-3 border-t border-white/5 pt-5">
-            <div className="min-w-0">
-              <p className="truncate font-display text-sm font-bold text-white">
-                {testimonial.name}
-              </p>
+            <div className="mt-5 min-w-0">
+              <p className="truncate font-display text-sm font-bold text-white">{testimonial.name}</p>
               <p className="mt-0.5 truncate text-xs text-gray-500">{testimonial.role}</p>
               <p className="mt-1 truncate text-[11px] font-semibold uppercase tracking-wider text-accent/80">
                 {testimonial.project}
@@ -94,6 +115,9 @@ function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; ind
 }
 
 export default function Testimonials() {
+  const { content } = useContent();
+  const testimonials = content.testimonials;
+
   return (
     <section id="testimonials" className="relative overflow-hidden py-28">
       <div
@@ -108,11 +132,17 @@ export default function Testimonials() {
           subtitle="Watch real clients talk about their experience working with me."
         />
 
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {TESTIMONIALS.map((testimonial, i) => (
-            <TestimonialCard key={testimonial.name} testimonial={testimonial} index={i} />
-          ))}
-        </div>
+        {testimonials.length > 0 ? (
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {testimonials.map((testimonial, i) => (
+              <TestimonialCard key={testimonial.id ?? i} testimonial={testimonial} index={i} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-sm text-gray-500">
+            No testimonials yet — add them from the admin panel.
+          </p>
+        )}
       </div>
     </section>
   );

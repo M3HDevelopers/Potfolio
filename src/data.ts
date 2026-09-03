@@ -277,6 +277,7 @@ export const CONTACT_ITEMS: ContactItem[] = [
 /* ------------------------------------------------------------------ */
 
 export type Testimonial = {
+  id?: string;
   quote: string;
   name: string;
   role: string;
@@ -344,6 +345,7 @@ export const TESTIMONIALS: Testimonial[] = [
 /* ------------------------------------------------------------------ */
 
 export type Review = {
+  id?: string;
   name: string;
   role: string;
   platform: string;

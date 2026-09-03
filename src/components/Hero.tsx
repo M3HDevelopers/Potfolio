@@ -1,7 +1,8 @@
+import { useContent } from "../store/content";
 import { ArrowRightIcon, ChevronDownIcon } from "./Icons";
 
-/** Rotating circular badge — "MERN STACK DEVELOPER" on a slow orbit. */
-function OrbitBadge() {
+/** Rotating circular badge — text on a slow orbit. */
+function OrbitBadge({ text }: { text: string }) {
   return (
     <svg
       viewBox="0 0 200 200"
@@ -12,15 +13,16 @@ function OrbitBadge() {
         <path id="orbit-circle" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" />
       </defs>
       <text className="fill-current font-sans text-[13.5px] font-semibold uppercase" letterSpacing="4.5">
-        <textPath href="#orbit-circle">
-          MERN Stack Developer • React • Node • Mongo •
-        </textPath>
+        <textPath href="#orbit-circle">{text}</textPath>
       </text>
     </svg>
   );
 }
 
 export default function Hero() {
+  const { content } = useContent();
+  const hero = content.hero;
+
   return (
     <section id="home" className="relative flex min-h-screen items-center overflow-hidden pt-20">
       {/* Ambient layers */}
@@ -44,36 +46,36 @@ export default function Hero() {
             className="animate-fade-up text-sm font-bold uppercase tracking-[0.4em] text-accent"
             style={{ animationDelay: "0ms" }}
           >
-            Hello!
+            {hero.greeting}
           </p>
 
           <h1
             className="mt-6 animate-fade-up font-display text-5xl font-bold leading-[1.06] text-white sm:text-6xl lg:text-7xl"
             style={{ animationDelay: "120ms" }}
           >
-            I&apos;m <span className="text-accent">Muzammil Ahmed</span>
+            {hero.nameIntro} <span className="text-accent">{hero.name}</span>
           </h1>
 
           <p
             className="mt-7 animate-fade-up font-display text-3xl font-bold text-white sm:text-4xl"
             style={{ animationDelay: "240ms" }}
           >
-            Web Developer
+            {hero.roleLine1}
           </p>
 
           <p
             className="mt-3 animate-fade-up text-lg font-normal text-white/90 md:text-xl"
             style={{ animationDelay: "340ms" }}
           >
-            A Senior MERN Stack Web Developer
+            {hero.roleLine2}
           </p>
 
           <div className="mt-11 animate-fade-up" style={{ animationDelay: "460ms" }}>
             <a
-              href="#projects"
+              href={hero.buttonLink || "#projects"}
               className="group inline-flex items-center gap-3 rounded-full border border-white px-6 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white transition-all duration-300 hover:bg-white hover:text-black hover:shadow-[0_0_35px_rgba(255,255,255,0.25)]"
             >
-              My Works
+              {hero.buttonText}
               <ArrowRightIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </a>
           </div>
@@ -85,7 +87,7 @@ export default function Hero() {
           <div className="absolute inset-0 m-auto h-[17rem] w-[17rem] rounded-full border border-dashed border-accent/15" />
 
           <div className="absolute inset-0 flex items-center justify-center">
-            <OrbitBadge />
+            <OrbitBadge text={hero.orbitText} />
           </div>
 
           <span className="absolute font-display text-[6.5rem] font-extrabold leading-none text-transparent [-webkit-text-stroke:1.5px_rgba(255,193,7,0.4)]">
