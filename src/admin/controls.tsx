@@ -724,6 +724,220 @@ export function VisibilityToggle({
   );
 }
 
+/* ------------------------------------------------------------------ */
+/*  Password + OTP                                                     */
+/* ------------------------------------------------------------------ */
+
+/** Password field with a show / hide eye toggle. */
+export function PasswordInput({
+  label,
+  value,
+  onChange,
+  placeholder = "••••••••",
+  hint,
+  autoFocus = false,
+  error = false,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  hint?: string;
+  autoFocus?: boolean;
+  error?: boolean;
+}) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <Field label={label} hint={hint}>
+      <div className="relative">
+        <input
+          type={visible ? "text" : "password"}
+          value={value}
+          placeholder={placeholder}
+          onChange={(e) => onChange(e.target.value)}
+          autoFocus={autoFocus}
+          className={`${inputCls} pr-11 ${error ? "border-red-400/60" : ""}`}
+        />
+        <button
+          type="button"
+          onClick={() => setVisible((v) => !v)}
+          aria-label={visible ? "Hide password" : "Show password"}
+          title={visible ? "Hide" : "Show"}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors hover:text-accent"
+        >
+          {visible ? <EyeOffIcon className="h-[18px] w-[18px]" /> : <EyeIcon className="h-[18px] w-[18px]" />}
+        </button>
+      </div>
+    </Field>
+  );
+}
+
+/**
+ * OTP verification modal.
+ * Demo mode for now: the 6-digit code is generated client-side and shown in a
+ * banner. Once the backend is ready, `sendCode` should call the email API and
+ * the banner should be removed.
+ */
+export function OtpModal({
+  open,
+  title,
+  description,
+  onClose,
+  onVerified,
+}: {
+  open: boolean;
+  title: string;
+  description: string;
+  onClose: () => void;
+  onVerified: () => void;
+}) {
+  const toast = useToast();
+  const [code, setCode] = useState("");
+  const [input, setInput] = useState("");
+  const [error, setError] = useState(false);
+  const [sending, setSending] = useState(true);
+  const [resendIn, setResendIn] = useState(0);
+
+  const send = useCallback(() => {
+    setSending(true);
+    setError(false);
+    setInput("");
+    const next = String(Math.floor(100000 + Math.random() * 900000));
+    window.setTimeout(() => {
+      setCode(next);
+      setSending(false);
+      setResendIn(30);
+    }, 900);
+  }, []);
+
+  useEffect(() => {
+    if (open) send();
+  }, [open, send]);
+
+  useEffect(() => {
+    if (resendIn <= 0) return;
+    const t = window.setTimeout(() => setResendIn((s) => s - 1), 1000);
+    return () => window.clearTimeout(t);
+  }, [resendIn]);
+
+  if (!open) return null;
+
+  const verify = () => {
+    if (input.trim() === code) {
+      toast("OTP verified");
+      onVerified();
+    } else {
+      setError(true);
+    }
+  };
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-sm animate-pop-in rounded-xl border border-white/10 bg-[#0d0d0d] p-7"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h3 className="font-display text-lg font-bold text-white">{title}</h3>
+            <p className="mt-1.5 text-xs leading-relaxed text-gray-500">{description}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/15 text-gray-400 transition-all hover:rotate-90 hover:border-accent hover:text-accent"
+          >
+            <CloseIcon className="h-4 w-4" />
+          </button>
+        </div>
+
+        {/* Demo banner — backend aane par hat jayega */}
+        <div className="mt-5 rounded-md border border-accent/40 bg-accent/[0.07] px-4 py-3">
+          {sending ? (
+            <p className="flex items-center gap-2.5 text-xs font-semibold text-accent">
+              <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 animate-spin" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" opacity="0.25" />
+                <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+              </svg>
+              Sending OTP to your email…
+            </p>
+          ) : (
+            <>
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-accent/80">
+                Demo mode — no email service yet
+              </p>
+              <p className="mt-1 font-display text-2xl font-extrabold tracking-[0.35em] text-accent">
+                {code}
+              </p>
+              <p className="mt-1 text-[11px] text-gray-500">
+                Backend connect hone ke baad ye code email pe jayega.
+              </p>
+            </>
+          )}
+        </div>
+
+        <input
+          type="text"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          maxLength={6}
+          value={input}
+          disabled={sending}
+          placeholder="——————"
+          onChange={(e) => {
+            setInput(e.target.value.replace(/\D/g, "").slice(0, 6));
+            setError(false);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") verify();
+          }}
+          className={`mt-5 w-full rounded-md border bg-neutral-950 px-4 py-3.5 text-center font-display text-xl font-bold tracking-[0.5em] text-white outline-none transition-colors ${
+            error ? "border-red-400/70" : "border-white/10 focus:border-accent"
+          }`}
+        />
+        {error ? (
+          <p className="mt-2 text-xs text-red-400">
+            Incorrect code — check the demo banner above and try again.
+          </p>
+        ) : null}
+
+        <button
+          type="button"
+          onClick={verify}
+          disabled={sending || input.length < 6}
+          className="mt-5 w-full rounded-full bg-accent py-2.5 text-xs font-bold uppercase tracking-[0.2em] text-black transition-colors enabled:hover:bg-yellow-300 disabled:opacity-40"
+        >
+          Verify OTP
+        </button>
+
+        <div className="mt-4 text-center">
+          {resendIn > 0 ? (
+            <span className="text-[11px] text-gray-600">
+              Resend available in <span className="font-bold text-gray-400">{resendIn}s</span>
+            </span>
+          ) : (
+            <button
+              type="button"
+              onClick={send}
+              disabled={sending}
+              className="text-[11px] font-semibold text-gray-400 underline underline-offset-4 transition-colors hover:text-accent"
+            >
+              Didn&apos;t receive it? Resend code
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /** Two-step delete: first click arms it, second click confirms. */
 export function DeleteButton({
   onDelete,

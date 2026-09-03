@@ -3,8 +3,10 @@ import { useContent, type AboutContent, type ContactItem, type HeroContent, type
 import {
   DeleteButton,
   ImagePicker,
+  OtpModal,
   PairsEditor,
   ParagraphsEditor,
+  PasswordInput,
   ResumePicker,
   SaveBar,
   SelectInput,
@@ -194,11 +196,119 @@ export function ContactInfoTab() {
 /*  Settings                                                           */
 /* ------------------------------------------------------------------ */
 
+/** Change-password card — new password only saves after OTP verification. */
+function SecurityCard() {
+  const { content, updateSection } = useContent();
+  const toast = useToast();
+  const [current, setCurrent] = useState("");
+  const [next, setNext] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [error, setError] = useState("");
+  const [otpOpen, setOtpOpen] = useState(false);
+
+  const request = () => {
+    if (!current) return setError("Enter your current password first.");
+    if (current !== content.settings.adminPassword)
+      return setError("Current password is incorrect.");
+    if (next.length < 6) return setError("New password must be at least 6 characters.");
+    if (next !== confirm) return setError("New passwords do not match.");
+    setError("");
+    setOtpOpen(true);
+  };
+
+  const apply = () => {
+    updateSection("settings", { ...content.settings, adminPassword: next });
+    setOtpOpen(false);
+    setCurrent("");
+    setNext("");
+    setConfirm("");
+    toast("Password changed successfully");
+  };
+
+  return (
+    <div className="rounded-lg border border-white/10 bg-white/[0.02] p-5">
+      <div className="flex items-center gap-3">
+        <span className="flex h-9 w-9 items-center justify-center rounded-full border border-accent/40 bg-accent/10 text-accent">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-4 w-4"
+            aria-hidden="true"
+          >
+            <rect x="4.5" y="10.5" width="15" height="9.5" rx="2" />
+            <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" />
+            <path d="M12 14.5v2" />
+          </svg>
+        </span>
+        <div>
+          <h3 className="font-display text-sm font-bold text-white">Security — Change Password</h3>
+          <p className="text-[11px] text-gray-500">
+            New password OTP verification ke baad hi save hota hai.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-5 grid gap-4 sm:grid-cols-3">
+        <PasswordInput
+          label="Current password"
+          value={current}
+          onChange={(v) => {
+            setCurrent(v);
+            setError("");
+          }}
+        />
+        <PasswordInput
+          label="New password"
+          value={next}
+          onChange={(v) => {
+            setNext(v);
+            setError("");
+          }}
+          hint="At least 6 characters"
+        />
+        <PasswordInput
+          label="Confirm new password"
+          value={confirm}
+          onChange={(v) => {
+            setConfirm(v);
+            setError("");
+          }}
+        />
+      </div>
+
+      {error ? <p className="mt-3 text-xs text-red-400">{error}</p> : null}
+
+      <button
+        type="button"
+        onClick={request}
+        className="mt-4 rounded-full bg-accent px-6 py-2 text-[11px] font-bold uppercase tracking-wider text-black transition-all hover:bg-yellow-300 hover:shadow-[0_8px_28px_rgba(255,193,7,0.35)]"
+      >
+        Change Password
+      </button>
+
+      <OtpModal
+        open={otpOpen}
+        title="Verify it's you"
+        description={`We sent a 6-digit code to ${content.settings.email}. Enter it to confirm the password change.`}
+        onClose={() => setOtpOpen(false)}
+        onVerified={apply}
+      />
+    </div>
+  );
+}
+
 export function SettingsTab() {
   const { content, updateSection, resetAll, importContent } = useContent();
   const toast = useToast();
   const [draft, setDraft] = useState<SiteSettings>(content.settings);
-  const dirty = JSON.stringify(draft) !== JSON.stringify(content.settings);
+  // Password lives in the Security card — exclude it from the dirty check.
+  const dirty =
+    JSON.stringify({ ...draft, adminPassword: content.settings.adminPassword }) !==
+    JSON.stringify(content.settings);
   const set = <K extends keyof SiteSettings>(k: K, v: SiteSettings[K]) =>
     setDraft((d) => ({ ...d, [k]: v }));
   const importRef = useRef<HTMLInputElement>(null);
@@ -239,14 +349,10 @@ export function SettingsTab() {
           hint="Vertical text on the left edge of the website."
         />
         <TextInput label="Copyright name" value={draft.copyrightName} onChange={(v) => set("copyrightName", v)} />
-        <TextInput label="Direct email" value={draft.email} onChange={(v) => set("email", v)} hint='Used for the "Prefer writing directly?" link.' />
-        <TextInput
-          label="Admin password"
-          value={draft.adminPassword}
-          onChange={(v) => set("adminPassword", v)}
-          hint="Saved locally — plug in real auth when the backend is ready."
-        />
+        <TextInput label="Direct email" value={draft.email} onChange={(v) => set("email", v)} hint='Used for the "Prefer writing directly?" link. Also the email that receives OTP codes.' />
       </div>
+
+      <SecurityCard />
 
       <ResumePicker label="Resume (PDF)" value={draft.resume} onChange={(v) => set("resume", v)} />
 
@@ -278,7 +384,11 @@ export function SettingsTab() {
       <SaveBar
         dirty={dirty}
         onSave={() => {
-          updateSection("settings", draft);
+          // Password is managed by the Security card — always keep the live one.
+          updateSection("settings", {
+            ...draft,
+            adminPassword: content.settings.adminPassword,
+          });
           toast("Settings saved");
         }}
         onDiscard={() => setDraft(content.settings)}
