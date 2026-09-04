@@ -202,8 +202,9 @@ function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; ind
               <span className="absolute bottom-3 left-3 rounded-md bg-black/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-accent backdrop-blur-sm">
                 Video Testimonial
               </span>
-              <span className="absolute bottom-3 right-3 rounded-md bg-black/80 px-2.5 py-1 text-[10px] font-semibold tracking-wider text-white/80 backdrop-blur-sm">
-                ▶ {testimonial.duration}
+              <span className="absolute bottom-3 right-3 flex items-center gap-1 rounded-md bg-black/80 px-2.5 py-1 text-[10px] font-semibold tracking-wider text-white/80 backdrop-blur-sm">
+                <PlayIcon className="h-2.5 w-2.5 text-accent" />
+                {testimonial.duration}
               </span>
             </button>
           ) : embed.type === "iframe" ? (

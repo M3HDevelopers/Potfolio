@@ -1,76 +1,120 @@
 # Portfolio Backend (Express + MongoDB)
 
-This is the backend for the Muzammil Ahmed portfolio admin panel. It stores all site content in
-MongoDB, handles admin login with JWT, sends OTP codes by email, and stores uploaded images/videos.
+Poora backend yahan `server/` folder mein hai. Frontend (`src/`) se bilkul alag —
+frontend sirf `src/lib/api.ts` ke zariye is API se baat karta hai, saara logic yahan hai.
 
-The frontend automatically uses this backend when `VITE_API_URL` is set. Otherwise it runs on
-localStorage, so the preview still works with no server.
+## Folder Structure
 
-## 1. Set up MongoDB
+```
+server/
+├── .env                     # Aapki real settings (Mongo URL, SMTP, secrets)
+├── .env.example             # Template (secrets ke bina)
+├── package.json
+├── seed.js                  # Pehli baar chalane par admin + sample data dalta hai
+├── uploads/                 # Uploaded images / resume (static serve hoti hain)
+└── src/
+    ├── index.js             # Express app bootstrap + /api mount
+    ├── config/
+    │   ├── env.js           # Saare env vars yahan validate hote hain
+    │   └── db.js            # MongoDB (mongoose) connection
+    ├── models/              # Mongoose schemas
+    │   ├── admin.model.js   # Admin account (bcrypt hash)
+    │   └── content.model.js # Poora site content (single document)
+    ├── services/            # Business logic
+    │   ├── jwt.service.js   # Token sign / verify
+    │   ├── otp.service.js   # In-memory OTP (10 min, single use)
+    │   ├── mail.service.js  # Nodemailer (OTP email)
+    │   └── content.service.js # Content read / save / merge messages
+    ├── middleware/
+    │   ├── auth.middleware.js   # JWT guard (requireAuth)
+    │   ├── error.middleware.js  # asyncHandler + errorHandler + 404
+    │   └── upload.middleware.js # Multer (image / pdf / video)
+    └── routes/              # Sab endpoints yahan
+        ├── index.js         # /api par sab mount karta hai
+        ├── auth.routes.js   # login, otp, reset, password, me
+        ├── content.routes.js# GET /content, GET /content/full, PUT /content
+        ├── contact.routes.js# POST /contact (public form)
+        └── upload.routes.js # POST /upload
+```
 
-Create a free cluster at [mongodb.com/atlas](https://www.mongodb.com/atlas) and get a connection
-string, or use a local MongoDB (`mongodb://127.0.0.1:27017/portfolio`).
-
-## 2. Configure environment
+## Setup (pehli baar)
 
 ```bash
 cd server
-cp .env.example .env
+npm install          # dependencies install
+npm run seed         # admin account + initial portfolio data MongoDB mein
+npm run dev          # development (auto-restart on change)
+# ya
+npm start            # production
 ```
 
-Edit `.env` and fill in:
+API `http://localhost:5000` par chalega. Health check: `GET /api/health`.
 
-- `MONGO_URI` — your MongoDB connection string
-- `JWT_SECRET` — a long random string
-- `ADMIN_EMAIL` / `ADMIN_PASSWORD` — the admin login
-- `CORS_ORIGIN` — your frontend URL (leave `*` while developing)
-- `SMTP_*` — optional, for real OTP emails. Without these the OTP code is printed to the server console.
+## MongoDB
 
-### Email providers that work with SMTP
+Aapka connection string `.env` mein `MONGO_URI` ke neeche already laga diya gaya hai:
 
-- **Gmail** — enable 2-Step Verification, create an App Password, use `smtp.gmail.com` port 587.
-- **Brevo (Sendinblue)** — `smtp-relay.brevo.com` port 587.
-- **SendGrid** — `smtp.sendgrid.net` port 587, username `apikey`.
-
-## 3. Install, seed and run
-
-```bash
-npm install
-npm run seed   # creates the admin account + empty content document
-npm run dev    # or: npm start
+```
+mongodb+srv://academytechandgraphica098_db_user:***@cluster0.6wv3t6e.mongodb.net/portfolio?retryWrites=true&w=majority
 ```
 
-The API now listens on `http://localhost:5000`. Test it with `http://localhost:5000/api/health`.
+- Database ka naam `portfolio` rakha gaya hai (URL ke aakhir mein). Chahein to badal sakte hain.
+- **Zaroori:** Atlas > Network Access mein jaa kar apna IP allow karein
+  (ya `0.0.0.0/0` allow karein taake kahin se bhi connect ho). Warna connection fail hoga.
 
-## 4. Connect the frontend
+## Frontend ko connect karna
 
-In the project root, create `.env`:
+Project root mein `.env` banayein aur backend ka URL dein:
 
 ```
 VITE_API_URL=http://localhost:5000
 ```
 
-Rebuild/reload the frontend. The admin panel header will now say "Connected to backend".
+Phir frontend rebuild karein. Ab:
+- Public site `GET /api/content` se data leti hai.
+- Admin panel login `POST /api/auth/login` se hota hai.
+- Har save `PUT /api/content` par MongoDB mein jata hai.
+- Contact form `POST /api/contact` se aapke inbox mein aata hai.
 
-The first time you log in, your local (browser) content is pushed to the server as the initial
-dataset. After that, the server is the source of truth.
+Agar `VITE_API_URL` khali ho to frontend localStorage mode mein chalta hai
+(koi server nahi chahiye) — dono modes automatically handle hote hain.
 
-## 5. Deploy
+## API Endpoints
 
-- **Backend** — deploy the `server` folder to Render, Railway or a VPS. Set the same `.env`
-  variables there. Make sure `CORS_ORIGIN` is your production frontend URL.
-- **Frontend** — build with `VITE_API_URL` pointing at the deployed backend.
+| Method | Route                | Auth | Kaam                                |
+|--------|----------------------|------|-------------------------------------|
+| GET    | /api/health          | No   | API zinda hai?                      |
+| POST   | /api/auth/login      | No   | Password se token milta hai         |
+| POST   | /api/auth/otp        | No   | Admin email par OTP bhejta hai      |
+| POST   | /api/auth/reset      | No   | OTP + naya password se reset        |
+| POST   | /api/auth/password   | Yes  | Andar se password change (OTP)      |
+| GET    | /api/auth/me         | Yes  | Session check                       |
+| GET    | /api/content         | No   | Public site content (password nahi) |
+| GET    | /api/content/full    | Yes  | Poora content (admin panel)         |
+| PUT    | /api/content         | Yes  | Poora content save                  |
+| POST   | /api/contact         | No   | Contact form message                |
+| POST   | /api/upload          | Yes  | Image / resume upload, URL milta hai|
 
-## API overview
+## Mujhe (SMTP ke liye) kya chahiye?
 
-| Method | Path                | Auth | Purpose                                   |
-| ------ | ------------------- | ---- | ----------------------------------------- |
-| POST   | /api/auth/login     |      | Login with password, returns JWT          |
-| POST   | /api/auth/otp       |      | Email a 6-digit OTP to the admin email    |
-| POST   | /api/auth/reset     |      | Reset password using the OTP              |
-| POST   | /api/auth/password  | ✔    | Change password (current + OTP)           |
-| GET    | /api/content        |      | Public content (password stripped)        |
-| GET    | /api/content/full   | ✔    | Full content including messages           |
-| PUT    | /api/content        | ✔    | Save content (messages merged by id)      |
-| POST   | /api/contact        |      | Public contact-form submission            |
-| POST   | /api/upload         | ✔    | Upload image/video/resume (max 8MB)       |
+Real OTP emails bhejne ke liye `.env` mein ye values chahiye:
+
+| Variable     | Kya hai                                        |
+|--------------|------------------------------------------------|
+| `SMTP_HOST`  | Mail server host (Gmail: `smtp.gmail.com`, Brevo: `smtp-relay.brevo.com`, SendGrid: `smtp.sendgrid.net`) |
+| `SMTP_PORT`  | Port (Gmail/Brevo: `587`, SSL ke liye `465`)    |
+| `SMTP_USER`  | Aapka email (Gmail mein pura address)           |
+| `SMTP_PASS`  | **Gmail App Password** (normal password NAHI chalega) |
+| `SMTP_FROM`  | Sender name + email, jaise `Muzammil <aap@gmail.com>` |
+
+**Gmail App Password kaise banayein:** Google Account > Security > 2-Step Verification on karein >
+phir "App passwords" se ek 16-character password generate karein aur `SMTP_PASS` mein dalein.
+
+Jab tak SMTP khali hai, OTP code **server console** mein print hota hai — flow phir bhi poora chalta hai.
+
+## Security notes
+
+- `JWT_SECRET` zaroor badlein (lamba random string).
+- `ADMIN_PASSWORD` seed ke baad admin panel ke Settings > Security se change karein.
+- Production mein `CORS_ORIGIN` ko sirf apne frontend domain par set karein (`*` na rakhein).
+- `.env` kabhi Git mein commit na karein (`.gitignore` mein already excluded hai).

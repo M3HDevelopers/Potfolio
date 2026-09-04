@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
-import { StarIcon } from "../components/Icons";
+import { ArrowDownIcon, ArrowUpIcon, CheckIcon, ChevronLeftIcon, StarIcon } from "../components/Icons";
 import {
   uid,
   type AboutContent,
@@ -30,6 +30,18 @@ import {
   VisibilityToggle,
   useToast,
 } from "./controls";
+
+function BackToList({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-300 transition-colors hover:border-white hover:text-white"
+    >
+      <ChevronLeftIcon className="h-3.5 w-3.5" />
+      Back to list
+    </button>
+  );
+}
 
 const ICON_OPTIONS = [
   { value: "signpost", label: "Signpost (Address)" },
@@ -240,9 +252,7 @@ function ProjectForm({ project, onSave, onCancel }: { project: Project; onSave: 
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <h2 className="font-display text-lg font-bold text-white">{project.title ? `Edit: ${project.title}` : "New Project"}</h2>
-        <button onClick={onCancel} className="rounded-full border border-white/15 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-300 transition-colors hover:border-white hover:text-white">
-          ← Back to list
-        </button>
+        <BackToList onClick={onCancel} />
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
@@ -265,11 +275,13 @@ function ProjectForm({ project, onSave, onCancel }: { project: Project; onSave: 
                   Screenshot {i + 1} {i === 0 ? <span className="ml-1 text-accent">(thumbnail)</span> : null}
                 </span>
                 <div className="flex gap-2">
-                  <button onClick={() => moveImage(i, -1)} disabled={i === 0} className="rounded-md border border-white/10 px-2.5 py-1 text-[10px] font-bold text-gray-400 transition-colors enabled:hover:border-accent enabled:hover:text-accent disabled:opacity-30">
-                    ↑ Up
+                  <button onClick={() => moveImage(i, -1)} disabled={i === 0} className="inline-flex items-center gap-1 rounded-md border border-white/10 px-2.5 py-1 text-[10px] font-bold text-gray-400 transition-colors enabled:hover:border-accent enabled:hover:text-accent disabled:opacity-30">
+                    <ArrowUpIcon className="h-3 w-3" />
+                    Up
                   </button>
-                  <button onClick={() => moveImage(i, 1)} disabled={i === draft.gallery.length - 1} className="rounded-md border border-white/10 px-2.5 py-1 text-[10px] font-bold text-gray-400 transition-colors enabled:hover:border-accent enabled:hover:text-accent disabled:opacity-30">
-                    ↓ Down
+                  <button onClick={() => moveImage(i, 1)} disabled={i === draft.gallery.length - 1} className="inline-flex items-center gap-1 rounded-md border border-white/10 px-2.5 py-1 text-[10px] font-bold text-gray-400 transition-colors enabled:hover:border-accent enabled:hover:text-accent disabled:opacity-30">
+                    <ArrowDownIcon className="h-3 w-3" />
+                    Down
                   </button>
                   <button onClick={() => setDraft((d) => ({ ...d, gallery: d.gallery.filter((_, idx) => idx !== i) }))} className="rounded-md border border-red-400/40 px-2.5 py-1 text-[10px] font-bold text-red-400 transition-colors hover:bg-red-400/10">
                     Remove
@@ -396,9 +408,7 @@ function ReviewForm({ review, onSave, onCancel }: { review: Review; onSave: (r: 
     <div className="space-y-5">
       <div className="flex items-center justify-between gap-4">
         <h2 className="font-display text-lg font-bold text-white">{review.name ? `Edit: ${review.name}` : "New Review"}</h2>
-        <button onClick={onCancel} className="rounded-full border border-white/15 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-300 transition-colors hover:border-white hover:text-white">
-          ← Back to list
-        </button>
+        <BackToList onClick={onCancel} />
       </div>
       <ImagePicker label="Client photo" value={draft.photo} onChange={(v) => setDraft((d) => ({ ...d, photo: v }))} />
       <div className="grid gap-5 sm:grid-cols-2">
@@ -503,9 +513,7 @@ function TestimonialForm({ testimonial, onSave, onCancel }: { testimonial: Testi
     <div className="space-y-5">
       <div className="flex items-center justify-between gap-4">
         <h2 className="font-display text-lg font-bold text-white">{testimonial.name ? `Edit: ${testimonial.name}` : "New Testimonial"}</h2>
-        <button onClick={onCancel} className="rounded-full border border-white/15 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-300 transition-colors hover:border-white hover:text-white">
-          ← Back to list
-        </button>
+        <BackToList onClick={onCancel} />
       </div>
       <VideoPicker label="Client video" value={draft.video} onChange={(v) => setDraft((d) => ({ ...d, video: v }))} />
       <div className="grid gap-5 sm:grid-cols-2">

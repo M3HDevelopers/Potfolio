@@ -1,49 +1,58 @@
-require("dotenv").config();
-const fs = require("fs");
+/* Portfolio API bootstrap.
+   Wires up Express, connects to MongoDB and mounts every route under /api. */
+
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
+const helmet = require("helmet");
+const morgan = require("morgan");
 
+const config = require("./config/env");
+const { connectDB } = require("./config/db");
 const routes = require("./routes");
+const { uploadsDir } = require("./middleware/upload.middleware");
+const { notFound, errorHandler } = require("./middleware/error.middleware");
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI;
 
-/* Make sure the uploads folder exists. */
-const uploadsDir = path.join(__dirname, "..", "uploads");
-if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+/* Security + parsing */
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+app.use(cors({ origin: config.cors.origin, credentials: false }));
+app.use(express.json({ limit: "15mb" })); // large limit so uploaded data-URLs fit
+app.use(express.urlencoded({ extended: true, limit: "15mb" }));
 
-app.use(cors({ origin: process.env.CORS_ORIGIN || "*" }));
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+/* Request logging in development */
+if (config.env !== "production") {
+  app.use(morgan("dev"));
+}
 
-/* Serve uploaded files. */
+/* Uploaded files are served statically */
 app.use("/uploads", express.static(uploadsDir));
 
-app.get("/api/health", (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
+/* API routes */
 app.use("/api", routes);
 
-/* Central error handler. */
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ error: "Something went wrong on the server." });
+/* Serve the built frontend if it exists (optional single-server deploy) */
+const clientDist = path.join(__dirname, "..", "..", "dist");
+app.use(express.static(clientDist));
+app.get("*", (req, res, next) => {
+  if (req.originalUrl.startsWith("/api")) return next();
+  res.sendFile(path.join(clientDist, "index.html"), (err) => {
+    if (err) next();
+  });
 });
 
+/* Error handling */
+app.use(notFound);
+app.use(errorHandler);
+
 async function start() {
-  if (!MONGO_URI) {
-    console.error("MONGO_URI is not set. Copy .env.example to .env and add your MongoDB connection string.");
-    process.exit(1);
-  }
-  try {
-    await mongoose.connect(MONGO_URI);
-    console.log("MongoDB connected");
-  } catch (e) {
-    console.error("Could not connect to MongoDB:", e.message);
-    process.exit(1);
-  }
-  app.listen(PORT, () => console.log(`Portfolio API listening on http://localhost:${PORT}`));
+  await connectDB();
+  app.listen(config.port, () => {
+    console.log(`\n[api] Portfolio API listening on port ${config.port}`);
+    console.log(`[api] Environment: ${config.env}`);
+    console.log(`[api] SMTP: ${config.smtp.enabled ? "configured" : "not configured (OTP logged to console)"}\n`);
+  });
 }
 
 start();

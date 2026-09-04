@@ -1,52 +1,56 @@
-/* Creates the admin account and an empty content document.
-   Run once after setting up .env:  npm run seed
-   It is idempotent: running it again will not duplicate anything. */
+/* Seeds the database the first time:
+     1. Creates the admin account (email + bcrypt-hashed password from .env)
+     2. Populates the content document with the initial portfolio data
 
-require("dotenv").config();
+   Run once after configuring .env:
+       npm run seed
+
+   The script is idempotent: running it again never duplicates records and
+   never overwrites content you have already edited from the admin panel. */
+
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const { Admin, Content } = require("./src/models");
+const config = require("./src/config/env");
+const { connectDB } = require("./src/config/db");
+const Admin = require("./src/models/admin.model");
+const Content = require("./src/models/content.model");
+const { isPopulated } = require("./src/services/content.service");
+const { seedContent } = require("./src/seed-data");
 
 async function seed() {
-  const uri = process.env.MONGO_URI;
-  if (!uri) {
-    console.error("MONGO_URI is not set. Copy .env.example to .env first.");
-    process.exit(1);
-  }
+  await connectDB();
 
-  await mongoose.connect(uri);
-  console.log("Connected to MongoDB");
-
-  const email = (process.env.ADMIN_EMAIL || "").toLowerCase();
-  const password = process.env.ADMIN_PASSWORD || "admin123";
-
-  if (!email) {
+  /* 1. Admin account */
+  if (!config.admin.email) {
     console.error("ADMIN_EMAIL is not set in .env");
     process.exit(1);
   }
 
-  const existing = await Admin.findOne();
-  if (existing) {
-    console.log(`Admin already exists (${existing.email}). Skipping account creation.`);
+  const existingAdmin = await Admin.findOne();
+  if (existingAdmin) {
+    console.log(`[seed] Admin already exists (${existingAdmin.email}). Skipping.`);
   } else {
-    const hash = await bcrypt.hash(password, 10);
-    await Admin.create({ email, passwordHash: hash });
-    console.log(`Admin account created for ${email}`);
+    const hash = await bcrypt.hash(config.admin.password, 10);
+    await Admin.create({ email: config.admin.email, passwordHash: hash });
+    console.log(`[seed] Admin account created for ${config.admin.email}`);
   }
 
-  const content = await Content.findOne();
-  if (content) {
-    console.log("Content document already exists. Skipping.");
+  /* 2. Initial content */
+  const doc = await Content.getSingleton();
+  if (isPopulated(doc.data)) {
+    console.log("[seed] Content already populated. Skipping (your edits are safe).");
   } else {
-    await Content.create({ data: {} });
-    console.log("Empty content document created. Your local content will be pushed on first admin login.");
+    doc.data = seedContent;
+    doc.markModified("data");
+    await doc.save();
+    console.log("[seed] Initial portfolio content inserted.");
   }
 
   await mongoose.disconnect();
-  console.log("Seed complete.");
+  console.log("[seed] Done.");
 }
 
-seed().catch((e) => {
-  console.error(e);
+seed().catch((err) => {
+  console.error("[seed] Failed:", err.message);
   process.exit(1);
 });
