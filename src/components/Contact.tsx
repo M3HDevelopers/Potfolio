@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 import { useContent } from "../store/content";
 import { CheckIcon, CONTACT_ICONS, PlaneIcon } from "./Icons";
-import Reveal from "./Reveal";
-import SectionHeading from "./SectionHeading";
+import { Reveal, SectionHeading } from "./ui";
 
 type FormData = { name: string; email: string; subject: string; message: string };
 type FormErrors = Partial<Record<keyof FormData, string>>;
@@ -22,7 +21,7 @@ function ContactForm() {
 
   const update =
     (field: keyof FormData) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setForm((f) => ({ ...f, [field]: e.target.value }));
       setErrors((err) => ({ ...err, [field]: undefined }));
     };
@@ -33,12 +32,11 @@ function ContactForm() {
     if (!form.email.trim()) errs.email = "Please enter your email.";
     else if (!EMAIL_RE.test(form.email)) errs.email = "That email doesn't look right.";
     if (!form.subject.trim()) errs.subject = "A short subject helps me reply faster.";
-    if (form.message.trim().length < 10)
-      errs.message = "Tell me a little more. At least 10 characters.";
+    if (form.message.trim().length < 10) errs.message = "Tell me a little more, at least 10 characters.";
     return errs;
   };
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const errs = validate();
     setErrors(errs);
@@ -48,12 +46,11 @@ function ContactForm() {
     setStatus("sending");
     timers.current.push(
       window.setTimeout(() => {
-        // Saved into the admin panel inbox (backend API plugs in here later).
         addMessage(submission);
         setStatus("sent");
         setForm(EMPTY_FORM);
         timers.current.push(window.setTimeout(() => setStatus("idle"), 6000));
-      }, 1500),
+      }, 1200),
     );
   };
 
@@ -73,75 +70,35 @@ function ContactForm() {
     >
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <div>
-          <label
-            htmlFor="contact-name"
-            className="mb-2 block text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400"
-          >
+          <label htmlFor="contact-name" className="mb-2 block text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">
             Your Name
           </label>
-          <input
-            id="contact-name"
-            type="text"
-            value={form.name}
-            onChange={update("name")}
-            placeholder="John Carter"
-            className={inputClass(!!errors.name)}
-          />
+          <input id="contact-name" type="text" value={form.name} onChange={update("name")} placeholder="John Carter" className={inputClass(!!errors.name)} />
           {errors.name ? <p className="mt-1.5 text-xs text-red-400">{errors.name}</p> : null}
         </div>
 
         <div>
-          <label
-            htmlFor="contact-email"
-            className="mb-2 block text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400"
-          >
+          <label htmlFor="contact-email" className="mb-2 block text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">
             Email Address
           </label>
-          <input
-            id="contact-email"
-            type="email"
-            value={form.email}
-            onChange={update("email")}
-            placeholder="john@company.com"
-            className={inputClass(!!errors.email)}
-          />
+          <input id="contact-email" type="email" value={form.email} onChange={update("email")} placeholder="john@company.com" className={inputClass(!!errors.email)} />
           {errors.email ? <p className="mt-1.5 text-xs text-red-400">{errors.email}</p> : null}
         </div>
       </div>
 
       <div className="mt-5">
-        <label
-          htmlFor="contact-subject"
-          className="mb-2 block text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400"
-        >
+        <label htmlFor="contact-subject" className="mb-2 block text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">
           Subject
         </label>
-        <input
-          id="contact-subject"
-          type="text"
-          value={form.subject}
-          onChange={update("subject")}
-          placeholder="Project inquiry: MERN web app"
-          className={inputClass(!!errors.subject)}
-        />
+        <input id="contact-subject" type="text" value={form.subject} onChange={update("subject")} placeholder="Project inquiry: MERN web app" className={inputClass(!!errors.subject)} />
         {errors.subject ? <p className="mt-1.5 text-xs text-red-400">{errors.subject}</p> : null}
       </div>
 
       <div className="mt-5">
-        <label
-          htmlFor="contact-message"
-          className="mb-2 block text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400"
-        >
+        <label htmlFor="contact-message" className="mb-2 block text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">
           Message
         </label>
-        <textarea
-          id="contact-message"
-          rows={5}
-          value={form.message}
-          onChange={update("message")}
-          placeholder="Tell me about your project, timeline and budget..."
-          className={`${inputClass(!!errors.message)} resize-none`}
-        />
+        <textarea id="contact-message" rows={5} value={form.message} onChange={update("message")} placeholder="Tell me about your project, timeline and budget..." className={`${inputClass(!!errors.message)} resize-none`} />
         {errors.message ? <p className="mt-1.5 text-xs text-red-400">{errors.message}</p> : null}
       </div>
 
@@ -180,34 +137,25 @@ export default function Contact() {
   const { content } = useContent();
   const { contactItems } = content;
   const { email, copyrightName, resume } = content.settings;
-  const resumeReady = !!resume?.data;
+
+  const resumeReady = !!resume.data;
 
   const scrollToForm = () => {
     document.getElementById("contact-form")?.scrollIntoView({ behavior: "smooth", block: "center" });
     window.setTimeout(
       () =>
-        (document.getElementById("contact-name") as HTMLInputElement | null)?.focus({
-          preventScroll: true,
-        }),
+        (document.getElementById("contact-name") as HTMLInputElement | null)?.focus({ preventScroll: true }),
       650,
     );
   };
 
   return (
     <section id="contact" className="relative overflow-hidden py-28">
-      <div
-        aria-hidden="true"
-        className="absolute -right-32 top-16 h-96 w-96 rounded-full bg-accent/[0.04] blur-[130px]"
-      />
+      <div aria-hidden="true" className="absolute -right-32 top-16 h-96 w-96 rounded-full bg-accent/[0.04] blur-[130px]" />
 
       <div className="relative mx-auto w-full max-w-6xl px-6 md:px-10">
-        <SectionHeading
-          watermark="CONTACT"
-          title="Contact Me"
-          subtitle="Below are the details to reach out to me!"
-        />
+        <SectionHeading watermark="CONTACT" title="Contact Me" subtitle="Below are the details to reach out to me!" />
 
-        {/* Contact info cards */}
         <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
           {contactItems.map((item, i) => {
             const Icon = CONTACT_ICONS[item.icon] ?? CONTACT_ICONS.globe;
@@ -217,26 +165,17 @@ export default function Contact() {
                   <Icon className="h-9 w-9 sm:h-10 sm:w-10" />
                 </span>
                 <span>
-                  <span className="block font-display text-sm font-bold uppercase tracking-[0.18em] text-white">
-                    {item.title}
-                  </span>
-                  <span className="mt-2 block text-sm text-gray-400 transition-colors group-hover:text-gray-300">
-                    {item.value}
-                  </span>
+                  <span className="block font-display text-sm font-bold uppercase tracking-[0.18em] text-white">{item.title}</span>
+                  <span className="mt-2 block text-sm text-gray-400 transition-colors group-hover:text-gray-300">{item.value}</span>
                 </span>
               </span>
             );
-            // The Resume card becomes a real download once a resume is uploaded in Settings.
+
             const isResumeCard = item.title.toLowerCase().includes("resume");
             let wrapper: ReactNode;
             if (isResumeCard && resumeReady) {
               wrapper = (
-                <a
-                  href={resume.data}
-                  download={resume.fileName || "Muzammil-Ahmed-Resume.pdf"}
-                  className="group inline-block"
-                  aria-label={`Download ${resume.fileName || "resume"}`}
-                >
+                <a href={resume.data} download={resume.fileName || "Muzammil-Ahmed-Resume.pdf"} className="group inline-block" aria-label={`Download ${resume.fileName || "resume"}`}>
                   {inner}
                 </a>
               );
@@ -258,7 +197,6 @@ export default function Contact() {
           })}
         </div>
 
-        {/* Form + pitch */}
         <div className="mt-24 grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
           <Reveal>
             <ContactForm />
@@ -278,30 +216,25 @@ export default function Contact() {
                 Let&apos;s build something <span className="text-accent">great</span> together.
               </h3>
               <p className="mt-4 leading-relaxed text-gray-400">
-                Whether it&apos;s a brand-new MERN platform, a dashboard, or rescuing a stuck
-                project, drop a message and I&apos;ll personally get back to you.
+                Whether it&apos;s a brand-new MERN platform, an AI feature, or rescuing a stuck project, drop a
+                message and I&apos;ll personally get back to you.
               </p>
 
               <ul className="mt-8 space-y-4">
-                {[
-                  "Response within 24 hours, guaranteed",
-                  "Free 30-minute consultation call",
-                  "Remote-friendly, working worldwide from Pakistan",
-                ].map((point) => (
-                  <li key={point} className="flex items-start gap-3.5 text-sm text-gray-300">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rotate-45 bg-accent" />
-                    {point}
-                  </li>
-                ))}
+                {["Response within 24 hours, guaranteed", "Free 30-minute consultation call", "Remote-friendly, working worldwide from Pakistan"].map(
+                  (point) => (
+                    <li key={point} className="flex items-start gap-3.5 text-sm text-gray-300">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rotate-45 bg-accent" />
+                      {point}
+                    </li>
+                  ),
+                )}
               </ul>
 
               <div className="mt-10 border-t border-white/10 pt-7">
                 <p className="text-sm text-gray-500">
                   Prefer writing directly?{" "}
-                  <a
-                    href={`mailto:${email}`}
-                    className="font-semibold text-accent underline decoration-accent/40 underline-offset-4 transition-colors hover:text-yellow-300"
-                  >
+                  <a href={`mailto:${email}`} className="font-semibold text-accent underline decoration-accent/40 underline-offset-4 transition-colors hover:text-yellow-300">
                     {email}
                   </a>
                 </p>
@@ -310,11 +243,8 @@ export default function Contact() {
           </Reveal>
         </div>
 
-        {/* Footer CTA */}
         <Reveal className="mt-24 flex flex-col items-center justify-center gap-5 sm:flex-row sm:gap-7">
-          <h3 className="font-display text-2xl font-bold text-white sm:text-3xl">
-            Have a Question?
-          </h3>
+          <h3 className="font-display text-2xl font-bold text-white sm:text-3xl">Have a Question?</h3>
           <button
             type="button"
             onClick={scrollToForm}
@@ -324,11 +254,9 @@ export default function Contact() {
           </button>
         </Reveal>
 
-        {/* Copyright */}
         <footer className="mt-20 border-t border-white/5 pt-8 pb-2 text-center">
           <p className="text-xs text-gray-500 sm:text-sm">
-            Copyright ©2026 All rights reserved |{" "}
-            <span className="text-gray-400">{copyrightName}</span>
+            Copyright ©2026 All rights reserved | <span className="text-gray-400">{copyrightName}</span>
           </p>
         </footer>
       </div>

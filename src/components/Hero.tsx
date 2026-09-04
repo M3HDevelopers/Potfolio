@@ -1,7 +1,6 @@
 import { useContent } from "../store/content";
 import { ArrowRightIcon, ChevronDownIcon, ChipIcon, RobotIcon } from "./Icons";
 
-/** Rotating circular badge — text on a slow orbit. */
 function OrbitBadge({ text }: { text: string }) {
   return (
     <svg
@@ -12,10 +11,8 @@ function OrbitBadge({ text }: { text: string }) {
       <defs>
         <path id="orbit-circle" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" />
       </defs>
-      <text className="fill-current font-sans text-[13px] font-semibold uppercase">
-        <textPath href="#orbit-circle" startOffset="0">
-          {text}
-        </textPath>
+      <text className="fill-current font-sans text-[13.5px] font-semibold uppercase">
+        <textPath href="#orbit-circle">{text}</textPath>
       </text>
     </svg>
   );
@@ -27,27 +24,16 @@ export default function Hero() {
 
   return (
     <section id="home" className="relative flex min-h-screen items-center overflow-hidden pt-20">
-      {/* Ambient layers */}
       <div
         aria-hidden="true"
         className="absolute inset-0 [background-image:radial-gradient(rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:30px_30px] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_45%,black,transparent)]"
       />
-      <div
-        aria-hidden="true"
-        className="absolute -left-48 top-1/4 h-[30rem] w-[30rem] rounded-full bg-accent/[0.05] blur-[130px]"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute -right-32 bottom-10 h-80 w-80 rounded-full bg-accent/[0.04] blur-[110px]"
-      />
+      <div aria-hidden="true" className="absolute -left-48 top-1/4 h-[30rem] w-[30rem] rounded-full bg-accent/[0.05] blur-[130px]" />
+      <div aria-hidden="true" className="absolute -right-32 bottom-10 h-80 w-80 rounded-full bg-accent/[0.04] blur-[110px]" />
 
       <div className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-14 px-6 py-24 md:px-10 lg:grid-cols-[1.15fr_0.85fr] lg:px-16">
-        {/* Left — introduction */}
         <div>
-          <p
-            className="animate-fade-up text-sm font-bold uppercase tracking-[0.4em] text-accent"
-            style={{ animationDelay: "0ms" }}
-          >
+          <p className="animate-fade-up text-sm font-bold uppercase tracking-[0.4em] text-accent">
             {hero.greeting}
           </p>
 
@@ -83,7 +69,6 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Right — signature ornament */}
         <div className="relative hidden h-[26rem] items-center justify-center lg:flex">
           <div className="absolute inset-0 m-auto h-[24rem] w-[24rem] rounded-full border border-white/5" />
           <div className="absolute inset-0 m-auto h-[17rem] w-[17rem] rounded-full border border-dashed border-accent/15" />
@@ -107,26 +92,20 @@ export default function Hero() {
           </span>
           <span className="absolute right-24 top-24 h-2.5 w-2.5 animate-float rounded-full bg-accent shadow-[0_0_18px_rgba(255,193,7,0.8)]" />
 
-          {/* AI / ML + robotics floaters */}
           <span
             className="absolute bottom-28 left-5 flex animate-float flex-col items-center gap-1 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-accent"
             style={{ animationDelay: "0.6s" }}
           >
             <ChipIcon className="h-5 w-5" />
-            <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/60">
-              AI
-            </span>
+            <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/60">AI</span>
           </span>
           <span className="absolute right-3 top-44 flex animate-float-slow flex-col items-center gap-1 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-white/70">
             <RobotIcon className="h-5 w-5" />
-            <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-accent/80">
-              ML
-            </span>
+            <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-accent/80">ML</span>
           </span>
         </div>
       </div>
 
-      {/* Scroll cue */}
       <a
         href="#about"
         aria-label="Scroll to About section"

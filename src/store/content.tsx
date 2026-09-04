@@ -3,6 +3,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -15,86 +16,15 @@ import {
   REVIEWS,
   SKILLS,
   TESTIMONIALS,
-  type ContactItem,
-  type Project,
-  type Review,
-  type Testimonial,
+  uid,
+  type SiteContent,
 } from "../data";
+import { api, apiEnabled, getToken } from "../lib/api";
 
-export type { ContactItem, Project, Review, Testimonial } from "../data";
+export type { SiteContent };
 
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
-
-export type LabelValue = { label: string; value: string };
-export type SkillRow = { name: string; level: number };
-export type NavItem = { id: string; label: string };
-
-export type ContactMessage = {
-  id: string;
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  date: string;
-  read: boolean;
-};
-
-export type SiteSettings = {
-  logoFirst: string;
-  logoSecond: string;
-  sideSignature: string;
-  copyrightName: string;
-  email: string;
-  adminPassword: string;
-  navLinks: NavItem[];
-  /** Uploaded resume (data-URL) or an external link. Powers the Resume card download. */
-  resume: { fileName: string; data: string };
-};
-
-export type HeroContent = {
-  greeting: string;
-  nameIntro: string;
-  name: string;
-  roleLine1: string;
-  roleLine2: string;
-  buttonText: string;
-  buttonLink: string;
-  orbitText: string;
-};
-
-export type AboutContent = {
-  profileImage: string;
-  headline: string;
-  bioParagraphs: string[];
-  basicInfo: LabelValue[];
-  skills: SkillRow[];
-  infoGrid: LabelValue[];
-  statNumber: string;
-  statLabel: string;
-  buttonText: string;
-};
-
-export type SiteContent = {
-  settings: SiteSettings;
-  hero: HeroContent;
-  about: AboutContent;
-  projects: Project[];
-  reviews: Review[];
-  testimonials: Testimonial[];
-  contactItems: ContactItem[];
-  messages: ContactMessage[];
-};
-
-export const uid = () =>
-  `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
-
-/* ------------------------------------------------------------------ */
-/*  Defaults — the original site content                               */
-/* ------------------------------------------------------------------ */
-
-export const DEFAULT_CONTENT: SiteContent = {
+/* Defaults (the original site content) */
+const DEFAULT_CONTENT: SiteContent = {
   settings: {
     logoFirst: "Muzammil",
     logoSecond: "Ahmed",
@@ -115,17 +45,17 @@ export const DEFAULT_CONTENT: SiteContent = {
     nameIntro: "I'm",
     name: "Muzammil Ahmed",
     roleLine1: "Web Developer",
-    roleLine2: "A Senior MERN Stack Web Developer",
+    roleLine2: "A Senior MERN Stack Developer and AI/ML Engineer",
     buttonText: "My Works",
     buttonLink: "#projects",
-    orbitText: "MERN Stack Developer • React • Node • Mongo • AI • ML •",
+    orbitText: "MERN Stack Developer • React • Node • AI • ML •",
   },
   about: {
     profileImage: PROFILE_IMAGE,
-    headline: "Professional FullStack Developer with [x]Three Year[/x] of Experience",
+    headline: "Professional FullStack Developer with [x]Three Years[/x] of Experience",
     bioParagraphs: [
-      "I am Muzammil Ahmed, a Senior MERN Stack Web Developer from Hyderabad, Pakistan. I craft fast, scalable and pixel-perfect web applications with React.js on the front end and Node.js, Express & MongoDB on the back end, handling everything from REST APIs and secure authentication flows to real-time features and cloud deployments.",
-      "Over the years I have shipped production platforms for e-commerce, food delivery and SaaS analytics, always obsessing over clean architecture, performance budgets and delightful user experiences.",
+      "I am Muzammil Ahmed, a Senior MERN Stack Web Developer and AI/ML Engineer from Hyderabad, Pakistan. I craft fast, scalable and pixel-perfect web applications with React.js on the front end and Node.js, Express and MongoDB on the back end, handling everything from REST APIs and secure auth to real-time features and cloud deployments.",
+      "Beyond the web, I train and deploy machine learning and deep learning models, from recommendation engines to computer vision, and I love shipping AI features inside real products.",
     ],
     basicInfo: BASIC_INFO,
     skills: SKILLS,
@@ -141,13 +71,8 @@ export const DEFAULT_CONTENT: SiteContent = {
   messages: [],
 };
 
-/* ------------------------------------------------------------------ */
-/*  Persistence                                                        */
-/* ------------------------------------------------------------------ */
+const STORAGE_KEY = "ma_portfolio_content_v2";
 
-const STORAGE_KEY = "ma_portfolio_content_v1";
-
-/** Guarantees every collection item has a stable id (old data gets one assigned). */
 function withIds<T extends { id?: string }>(arr: T[], prefix: string): T[] {
   return arr.map((x, i) => (x.id ? x : { ...x, id: `${prefix}_${i}` }));
 }
@@ -162,23 +87,18 @@ function mergeContent(saved: Partial<SiteContent> | null): SiteContent {
     },
     hero: { ...DEFAULT_CONTENT.hero, ...(saved.hero ?? {}) },
     about: { ...DEFAULT_CONTENT.about, ...(saved.about ?? {}) },
-    projects: withIds(
-      Array.isArray(saved.projects) ? saved.projects : DEFAULT_CONTENT.projects,
-      "pj",
-    ),
+    projects: withIds(Array.isArray(saved.projects) ? saved.projects : DEFAULT_CONTENT.projects, "pj"),
     reviews: withIds(Array.isArray(saved.reviews) ? saved.reviews : DEFAULT_CONTENT.reviews, "rv"),
     testimonials: withIds(
       Array.isArray(saved.testimonials) ? saved.testimonials : DEFAULT_CONTENT.testimonials,
       "tm",
     ),
-    contactItems: Array.isArray(saved.contactItems)
-      ? saved.contactItems
-      : DEFAULT_CONTENT.contactItems,
+    contactItems: Array.isArray(saved.contactItems) ? saved.contactItems : DEFAULT_CONTENT.contactItems,
     messages: Array.isArray(saved.messages) ? saved.messages : [],
   };
 }
 
-function loadContent(): SiteContent {
+export function loadContent(): SiteContent {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? mergeContent(JSON.parse(raw) as Partial<SiteContent>) : DEFAULT_CONTENT;
@@ -187,64 +107,97 @@ function loadContent(): SiteContent {
   }
 }
 
-/* ------------------------------------------------------------------ */
-/*  Context / store                                                    */
-/* ------------------------------------------------------------------ */
-
 type ContentStore = {
   content: SiteContent;
   updateSection: <K extends keyof SiteContent>(key: K, value: SiteContent[K]) => void;
   addMessage: (m: { name: string; email: string; subject: string; message: string }) => void;
   resetAll: () => void;
   importContent: (json: string) => boolean;
+  refreshFromServer: () => void;
 };
 
 const ContentContext = createContext<ContentStore | null>(null);
 
 export function ContentProvider({ children }: { children: ReactNode }) {
   const [content, setContent] = useState<SiteContent>(loadContent);
+  const contentRef = useRef(content);
+  const pushTimer = useRef<number | null>(null);
 
+  useEffect(() => {
+    contentRef.current = content;
+  }, [content]);
+
+  /* Persist locally always (offline fallback + cache) */
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
     } catch {
-      /* storage full — content stays in memory for the session */
+      /* storage full, content stays in memory */
     }
   }, [content]);
+
+  /* Debounced push to the backend when an admin is signed in */
+  const queuePush = useCallback(() => {
+    if (!apiEnabled || !getToken()) return;
+    if (pushTimer.current) window.clearTimeout(pushTimer.current);
+    pushTimer.current = window.setTimeout(() => {
+      api.content.push(contentRef.current).catch(() => {});
+    }, 900);
+  }, []);
+
+  /* Hydrate from the backend once (public view) */
+  useEffect(() => {
+    if (!apiEnabled) return;
+    let cancelled = false;
+    api.content
+      .fetchPublic()
+      .then(({ content: remote, empty }) => {
+        if (cancelled || empty || !remote) return;
+        setContent((prev) => ({ ...prev, ...remote, messages: prev.messages }));
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const refreshFromServer = useCallback(() => {
+    if (!apiEnabled || !getToken()) return;
+    api.content
+      .fetchFull()
+      .then(({ content: full, empty }) => {
+        if (!empty && full) setContent(mergeContent(full));
+      })
+      .catch(() => {});
+  }, []);
 
   const updateSection = useCallback(
     <K extends keyof SiteContent>(key: K, value: SiteContent[K]) => {
       setContent((c) => ({ ...c, [key]: value }));
+      queuePush();
     },
-    [],
+    [queuePush],
   );
 
   const addMessage = useCallback(
     (m: { name: string; email: string; subject: string; message: string }) => {
       setContent((c) => ({
         ...c,
-        messages: [
-          { ...m, id: uid(), date: new Date().toISOString(), read: false },
-          ...c.messages,
-        ],
+        messages: [{ ...m, id: uid(), date: new Date().toISOString(), read: false }, ...c.messages],
       }));
+      if (apiEnabled) api.messages.send(m).catch(() => {});
     },
     [],
   );
 
   const resetAll = useCallback(() => {
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      /* noop */
-    }
     setContent(DEFAULT_CONTENT);
   }, []);
 
-  const importContent = useCallback((json: string) => {
+  const importContent = useCallback((json: string): boolean => {
     try {
       const parsed = JSON.parse(json) as Partial<SiteContent>;
-      if (!parsed || typeof parsed !== "object" || !parsed.settings) return false;
+      if (!parsed || typeof parsed !== "object" || !parsed.hero) return false;
       setContent(mergeContent(parsed));
       return true;
     } catch {
@@ -254,15 +207,15 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
   return (
     <ContentContext.Provider
-      value={{ content, updateSection, addMessage, resetAll, importContent }}
+      value={{ content, updateSection, addMessage, resetAll, importContent, refreshFromServer }}
     >
       {children}
     </ContentContext.Provider>
   );
 }
 
-export function useContent(): ContentStore {
+export function useContent() {
   const ctx = useContext(ContentContext);
-  if (!ctx) throw new Error("useContent must be used inside <ContentProvider>");
+  if (!ctx) throw new Error("useContent must be used inside ContentProvider");
   return ctx;
 }

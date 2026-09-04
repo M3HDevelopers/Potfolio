@@ -1,352 +1,19 @@
-export type NavLink = { id: string; label: string };
+/* Types and default content for the whole site.
+   Every field here is editable from the admin panel. */
 
-export const NAV_LINKS: NavLink[] = [
-  { id: "home", label: "Home" },
-  { id: "about", label: "About" },
-  { id: "projects", label: "Projects" },
-  { id: "contact", label: "Contact" },
-];
+export type LabelValue = { label: string; value: string };
+export type SkillRow = { name: string; level: number };
 
 export type Project = {
-  id: string;
+  id?: string;
   title: string;
-  /** All screenshots — first one is used as the card thumbnail. */
   gallery: string[];
-  /** Live demo URL — replace with your deployed links later. */
   liveUrl: string;
   description: string;
   stack: string[];
-  /**
-   * Mark a project as featured to show it in the "Top Projects" area.
-   * Layout handles 1, 2, 3+ featured projects gracefully (admin-panel ready).
-   */
   featured?: boolean;
-  /** Hidden projects are kept in the admin panel but not shown on the website. */
   hidden?: boolean;
 };
-
-export const PROJECTS: Project[] = [
-  {
-    id: "ecommerce",
-    title: "E-Commerce Store",
-    featured: true,
-    gallery: [
-      "https://image.qwenlm.ai/generated-images/eb5084da-bdd4-4254-8ca9-c5c870c39d7f/_result.png",
-      "https://image.qwenlm.ai/generated-images/a4607d70-4df8-4956-8748-aa351088191a/_result.png",
-      "https://image.qwenlm.ai/generated-images/223e5ab9-de51-42e2-b0fd-99426b42c11e/_result.png",
-    ],
-    liveUrl: "https://example.com/projects/ecommerce-store",
-    description:
-      "A full-stack MERN e-commerce platform featuring product search & filters, cart with Stripe checkout, order tracking and a complete admin dashboard for inventory, coupons and sales analytics.",
-    stack: ["React.js", "Redux Toolkit", "Node.js", "Express", "MongoDB", "Stripe"],
-  },
-  {
-    id: "foodhub",
-    title: "FoodHub Delivery",
-    featured: true,
-    gallery: [
-      "https://image.qwenlm.ai/generated-images/8738f689-6efe-45ad-ab83-bebed423bf27/_result.png",
-      "https://image.qwenlm.ai/generated-images/099b0935-ddeb-4c70-82c6-98ba9603ab56/_result.png",
-      "https://image.qwenlm.ai/generated-images/1885693d-da52-4c2b-b97e-b1a40b493265/_result.png",
-    ],
-    liveUrl: "https://example.com/projects/foodhub-delivery",
-    description:
-      "A real-time food ordering web app with live order tracking over Socket.io, restaurant dashboards, automatic rider assignment and secure online payments for a smooth delivery experience.",
-    stack: ["React.js", "Socket.io", "Node.js", "Express", "MongoDB"],
-  },
-  {
-    id: "insight",
-    title: "Insight Analytics",
-    gallery: [
-      "https://image.qwenlm.ai/generated-images/106bd406-aeb2-47f3-860a-153a9ff7650a/_result.png",
-      "https://image.qwenlm.ai/generated-images/5708b76c-97ae-41ba-b01e-df7f1e9574c2/_result.png",
-      "https://image.qwenlm.ai/generated-images/4592dc8f-ff1a-43d6-a028-279de44da298/_result.png",
-    ],
-    liveUrl: "https://example.com/projects/insight-analytics",
-    description:
-      "A SaaS analytics dashboard with interactive charts, JWT role-based authentication, team workspaces and automated CSV / PDF reporting built on MongoDB Atlas aggregation pipelines.",
-    stack: ["React.js", "Chart.js", "Node.js", "Express", "MongoDB Atlas"],
-  },
-  {
-    id: "travelnest",
-    title: "TravelNest Bookings",
-    featured: true,
-    gallery: [
-      "https://picsum.photos/seed/travelnest-screen-1/1200/800",
-      "https://picsum.photos/seed/travelnest-screen-2/1200/800",
-      "https://picsum.photos/seed/travelnest-screen-3/1200/800",
-    ],
-    liveUrl: "https://example.com/projects/travelnest-bookings",
-    description:
-      "A travel booking platform with destination search, smart filters, secure payments and a full agency dashboard for managing tours, bookings and payouts.",
-    stack: ["React.js", "Node.js", "Express", "MongoDB", "Razorpay"],
-  },
-  {
-    id: "medicocare",
-    title: "MedicoCare Appointments",
-    gallery: [
-      "https://picsum.photos/seed/medicocare-screen-1/1200/800",
-      "https://picsum.photos/seed/medicocare-screen-2/1200/800",
-      "https://picsum.photos/seed/medicocare-screen-3/1200/800",
-    ],
-    liveUrl: "https://example.com/projects/medicocare-appointments",
-    description:
-      "A clinic management system with doctor profiles, real-time slot booking, patient records and automated SMS reminders built on a REST API.",
-    stack: ["React.js", "Node.js", "Express", "MongoDB", "Twilio"],
-  },
-  {
-    id: "eduspark",
-    title: "EduSpark LMS",
-    gallery: [
-      "https://picsum.photos/seed/eduspark-screen-1/1200/800",
-      "https://picsum.photos/seed/eduspark-screen-2/1200/800",
-      "https://picsum.photos/seed/eduspark-screen-3/1200/800",
-    ],
-    liveUrl: "https://example.com/projects/eduspark-lms",
-    description:
-      "An e-learning platform with video courses, quizzes, progress tracking and auto-generated certificates, with videos streamed securely from AWS S3.",
-    stack: ["React.js", "Redux Toolkit", "Node.js", "MongoDB", "AWS S3"],
-  },
-  {
-    id: "cryptopulse",
-    title: "CryptoPulse Tracker",
-    gallery: [
-      "https://picsum.photos/seed/cryptopulse-screen-1/1200/800",
-      "https://picsum.photos/seed/cryptopulse-screen-2/1200/800",
-      "https://picsum.photos/seed/cryptopulse-screen-3/1200/800",
-    ],
-    liveUrl: "https://example.com/projects/cryptopulse-tracker",
-    description:
-      "A crypto portfolio tracker with live WebSocket prices, interactive candlestick charts, watchlists and custom price alerts.",
-    stack: ["React.js", "Chart.js", "Node.js", "WebSockets", "MongoDB"],
-  },
-  {
-    id: "fittrack",
-    title: "FitTrack Gym Manager",
-    gallery: [
-      "https://picsum.photos/seed/fittrack-screen-1/1200/800",
-      "https://picsum.photos/seed/fittrack-screen-2/1200/800",
-      "https://picsum.photos/seed/fittrack-screen-3/1200/800",
-    ],
-    liveUrl: "https://example.com/projects/fittrack-gym",
-    description:
-      "A gym membership app with trainer booking, workout & diet plans, progress photos and membership renewal reminders.",
-    stack: ["React.js", "Node.js", "Express", "MongoDB"],
-  },
-  {
-    id: "estatehub",
-    title: "EstateHub Realty",
-    gallery: [
-      "https://picsum.photos/seed/estatehub-screen-1/1200/800",
-      "https://picsum.photos/seed/estatehub-screen-2/1200/800",
-      "https://picsum.photos/seed/estatehub-screen-3/1200/800",
-    ],
-    liveUrl: "https://example.com/projects/estatehub-realty",
-    description:
-      "A real-estate portal with map-based property search, virtual tours, an agent CRM and a built-in EMI / loan calculator.",
-    stack: ["React.js", "Mapbox", "Node.js", "Express", "MongoDB"],
-  },
-  {
-    id: "taskflow",
-    title: "TaskFlow Manager",
-    gallery: [
-      "https://picsum.photos/seed/taskflow-screen-1/1200/800",
-      "https://picsum.photos/seed/taskflow-screen-2/1200/800",
-      "https://picsum.photos/seed/taskflow-screen-3/1200/800",
-    ],
-    liveUrl: "https://example.com/projects/taskflow-manager",
-    description:
-      "A Kanban project-management tool with drag-and-drop boards, sprint planning and real-time team collaboration over Socket.io.",
-    stack: ["React.js", "Socket.io", "Node.js", "MongoDB"],
-  },
-  {
-    id: "chatsphere",
-    title: "ChatSphere Messenger",
-    gallery: [
-      "https://picsum.photos/seed/chatsphere-screen-1/1200/800",
-      "https://picsum.photos/seed/chatsphere-screen-2/1200/800",
-      "https://picsum.photos/seed/chatsphere-screen-3/1200/800",
-    ],
-    liveUrl: "https://example.com/projects/chatsphere-messenger",
-    description:
-      "A real-time chat app with group rooms, typing indicators, read receipts and media sharing, with messages delivered instantly via WebSockets.",
-    stack: ["React.js", "Socket.io", "Node.js", "MongoDB"],
-  },
-  {
-    id: "recipebox",
-    title: "RecipeBox Community",
-    gallery: [
-      "https://picsum.photos/seed/recipebox-screen-1/1200/800",
-      "https://picsum.photos/seed/recipebox-screen-2/1200/800",
-      "https://picsum.photos/seed/recipebox-screen-3/1200/800",
-    ],
-    liveUrl: "https://example.com/projects/recipebox-community",
-    description:
-      "A recipe-sharing community with step-by-step cook mode, weekly meal planning and auto-generated grocery lists.",
-    stack: ["React.js", "Node.js", "Express", "MongoDB"],
-  },
-  {
-    id: "autogarage",
-    title: "AutoGarage Rentals",
-    gallery: [
-      "https://picsum.photos/seed/autogarage-screen-1/1200/800",
-      "https://picsum.photos/seed/autogarage-screen-2/1200/800",
-      "https://picsum.photos/seed/autogarage-screen-3/1200/800",
-    ],
-    liveUrl: "https://example.com/projects/autogarage-rentals",
-    description:
-      "A car-rental platform with date-based availability, dynamic pricing, GPS vehicle tracking and automated PDF invoices.",
-    stack: ["React.js", "Node.js", "Express", "MongoDB", "Stripe"],
-  },
-  {
-    id: "hirelink",
-    title: "HireLink Jobs",
-    gallery: [
-      "https://picsum.photos/seed/hirelink-screen-1/1200/800",
-      "https://picsum.photos/seed/hirelink-screen-2/1200/800",
-      "https://picsum.photos/seed/hirelink-screen-3/1200/800",
-    ],
-    liveUrl: "https://example.com/projects/hirelink-jobs",
-    description:
-      "A job board with full-text search, application tracking, resume parsing and an employer analytics dashboard.",
-    stack: ["React.js", "Node.js", "MongoDB", "Elasticsearch"],
-  },
-  {
-    id: "eventease",
-    title: "EventEase Tickets",
-    gallery: [
-      "https://picsum.photos/seed/eventease-screen-1/1200/800",
-      "https://picsum.photos/seed/eventease-screen-2/1200/800",
-      "https://picsum.photos/seed/eventease-screen-3/1200/800",
-    ],
-    liveUrl: "https://example.com/projects/eventease-tickets",
-    description:
-      "An event-ticketing platform with seat maps, QR-code check-in, instant ticket delivery and automated organizer payouts.",
-    stack: ["React.js", "Node.js", "Express", "MongoDB", "QR API"],
-  },
-];
-
-export type Skill = { name: string; level: number };
-
-export const SKILLS: Skill[] = [
-  { name: "React.js", level: 95 },
-  { name: "Node.js", level: 90 },
-  { name: "Express.js", level: 88 },
-  { name: "MongoDB", level: 85 },
-];
-
-export const BASIC_INFO: { label: string; value: string }[] = [
-  { label: "Name", value: "Muzammil Ahmed" },
-  { label: "Job Role", value: "Senior MERN Developer" },
-  { label: "Experience", value: "7 Years" },
-  { label: "Address", value: "Hyderabad, Pakistan" },
-];
-
-export const INFO_GRID: { label: string; value: string }[] = [
-  { label: "Profile", value: "Muzammil Ahmed" },
-  { label: "Education", value: "BS Computer Science" },
-  { label: "Language", value: "English, Urdu" },
-  { label: "Other Skills", value: "React Native, Next.js" },
-];
-
-export type ContactItem = {
-  title: string;
-  value: string;
-  icon: "signpost" | "phone" | "plane" | "globe";
-  href?: string;
-};
-
-export const CONTACT_ITEMS: ContactItem[] = [
-  { title: "Address", value: "Hyderabad, Pakistan", icon: "signpost" },
-  { title: "Contact Number", value: "+92 314 3580908", icon: "phone", href: "tel:+923143580908" },
-  {
-    title: "Email Address",
-    value: "muzammil.ahmed.dev@gmail.com",
-    icon: "plane",
-    href: "mailto:muzammil.ahmed.dev@gmail.com",
-  },
-  {
-    title: "Resume",
-    value: "Download Resume",
-    icon: "globe",
-    href: "mailto:muzammil.ahmed.dev@gmail.com?subject=Resume%20Request%20%E2%80%94%20Muzammil%20Ahmed",
-  },
-];
-
-/* ------------------------------------------------------------------ */
-/*  Testimonials — client video testimonials (own section)             */
-/*  Replace the `video` URLs with real client recordings later.        */
-/* ------------------------------------------------------------------ */
-
-export type Testimonial = {
-  id?: string;
-  quote: string;
-  name: string;
-  role: string;
-  project: string;
-  initials: string;
-  rating: number;
-  video: string;
-  duration: string;
-  /** Hidden testimonials are kept in the admin panel but not shown on the website. */
-  hidden?: boolean;
-};
-
-export const TESTIMONIALS: Testimonial[] = [
-  {
-    quote:
-      "Muzammil rebuilt our store from scratch. Page loads dropped from 6 seconds to under 1, and conversions jumped 40% in the first month.",
-    name: "Sarah Mitchell",
-    role: "Founder, UrbanSole, United Kingdom",
-    project: "E-Commerce Rebuild",
-    initials: "SM",
-    rating: 5,
-    video:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    duration: "0:15",
-  },
-  {
-    quote:
-      "He delivered our platform two weeks ahead of schedule and kept us updated every single day. The live order tracking works flawlessly, even at peak hours.",
-    name: "Omar Farooq",
-    role: "CEO, FoodHub, Pakistan",
-    project: "Real-time Delivery Platform",
-    initials: "OF",
-    rating: 5,
-    video:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-    duration: "0:15",
-  },
-  {
-    quote:
-      "Communication was crystal clear and the code quality top-notch. He even set up our CI/CD pipeline without being asked. A true senior engineer.",
-    name: "Daniel Weber",
-    role: "Product Manager, InsightHQ, Germany",
-    project: "SaaS Analytics Dashboard",
-    initials: "DW",
-    rating: 5,
-    video:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-    duration: "0:15",
-  },
-  {
-    quote:
-      "We have worked with many freelancers, but Muzammil is the only one who thinks like a product owner. He flagged UX issues we hadn't even noticed.",
-    name: "Ayesha Khan",
-    role: "COO, Karvaan Tech, Karachi",
-    project: "Booking Platform MVP",
-    initials: "AK",
-    rating: 4,
-    video:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
-    duration: "0:15",
-  },
-];
-
-/* ------------------------------------------------------------------ */
-/*  Reviews — star-rated platform reviews with client photos           */
-/*  Shown one at a time in a horizontally scrollable carousel.         */
-/* ------------------------------------------------------------------ */
 
 export type Review = {
   id?: string;
@@ -358,62 +25,347 @@ export type Review = {
   when: string;
   photo: string;
   initials: string;
-  /** Hidden reviews are kept in the admin panel but not shown on the website. */
   hidden?: boolean;
 };
 
+export type Testimonial = {
+  id?: string;
+  quote: string;
+  name: string;
+  role: string;
+  project: string;
+  initials: string;
+  rating: number;
+  video: string;
+  duration: string;
+  hidden?: boolean;
+};
+
+export type ContactItem = {
+  title: string;
+  value: string;
+  icon: "signpost" | "phone" | "plane" | "globe";
+  href?: string;
+};
+
+export type Message = {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  date: string;
+  read: boolean;
+};
+
+export type HeroContent = {
+  greeting: string;
+  nameIntro: string;
+  name: string;
+  roleLine1: string;
+  roleLine2: string;
+  buttonText: string;
+  buttonLink: string;
+  orbitText: string;
+};
+
+export type AboutContent = {
+  profileImage: string;
+  headline: string;
+  bioParagraphs: string[];
+  basicInfo: LabelValue[];
+  skills: SkillRow[];
+  infoGrid: LabelValue[];
+  statNumber: string;
+  statLabel: string;
+  buttonText: string;
+};
+
+export type SiteSettings = {
+  logoFirst: string;
+  logoSecond: string;
+  sideSignature: string;
+  copyrightName: string;
+  email: string;
+  adminPassword: string;
+  navLinks: { id: string; label: string }[];
+  resume: { fileName: string; data: string };
+};
+
+export type SiteContent = {
+  settings: SiteSettings;
+  hero: HeroContent;
+  about: AboutContent;
+  projects: Project[];
+  reviews: Review[];
+  testimonials: Testimonial[];
+  contactItems: ContactItem[];
+  messages: Message[];
+};
+
+export const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+
+const IMG = {
+  profile: "https://image.qwenlm.ai/generated-images/a2a5520c-4b4f-4892-81fb-19e08690cd2e/_result.png",
+  ecommerce: "https://image.qwenlm.ai/generated-images/2bf42015-b754-496d-af6e-210b0ca545e5/_result.png",
+  foodhub: "https://image.qwenlm.ai/generated-images/b5fb1e87-a2bb-450a-9c35-00b0861d2488/_result.png",
+  analytics: "https://image.qwenlm.ai/generated-images/4d17d53f-5ee1-422b-96b1-382250e2a823/_result.png",
+};
+
+const shot = (seed: string) => `https://picsum.photos/seed/${seed}/1200/800`;
+
+export const BASIC_INFO: LabelValue[] = [
+  { label: "Name", value: "Muzammil Ahmed" },
+  { label: "Job Role", value: "Senior MERN Stack Developer" },
+  { label: "Experience", value: "7 Years" },
+  { label: "Address", value: "Hyderabad, Pakistan" },
+];
+
+export const SKILLS: SkillRow[] = [
+  { name: "React.js", level: 95 },
+  { name: "Node.js", level: 90 },
+  { name: "MongoDB / Express", level: 88 },
+  { name: "AI / ML (Python)", level: 85 },
+];
+
+export const INFO_GRID: LabelValue[] = [
+  { label: "Profile", value: "FullStack + AI/ML Engineer" },
+  { label: "Education", value: "BS Computer Science" },
+  { label: "Language", value: "English, Urdu, Sindhi" },
+  { label: "Other Skills", value: "Deep Learning, MLOps" },
+];
+
+export const PROJECTS: Project[] = [
+  {
+    id: "pj1",
+    title: "UrbanSole Store",
+    gallery: [IMG.ecommerce, shot("sole-cart"), shot("sole-product")],
+    liveUrl: "https://example.com/urbansole",
+    description:
+      "A full e-commerce platform with cart, checkout, Stripe payments and an admin dashboard. Built on a MERN stack with Redux for state and JWT auth.",
+    stack: ["React.js", "Node.js", "MongoDB", "Stripe"],
+    featured: true,
+  },
+  {
+    id: "pj2",
+    title: "FoodHub Delivery",
+    gallery: [IMG.foodhub, shot("food-menu"), shot("food-track")],
+    liveUrl: "https://example.com/foodhub",
+    description:
+      "Real-time food ordering with live rider tracking, restaurant dashboards and push notifications. WebSockets power the live updates.",
+    stack: ["React.js", "Express", "Socket.io", "MongoDB"],
+    featured: true,
+  },
+  {
+    id: "pj3",
+    title: "InsightHQ Analytics",
+    gallery: [IMG.analytics, shot("hq-reports"), shot("hq-team")],
+    liveUrl: "https://example.com/insighthq",
+    description:
+      "A SaaS analytics dashboard with charts, cohort reports and role based access. Charts rendered with Recharts over aggregated Mongo pipelines.",
+    stack: ["React.js", "Node.js", "Recharts", "MongoDB"],
+    featured: true,
+  },
+  {
+    id: "pj4",
+    title: "TravelNest Bookings",
+    gallery: [shot("travel-home"), shot("travel-search"), shot("travel-pay")],
+    liveUrl: "https://example.com/travelnest",
+    description:
+      "Hotel and trip booking engine with search filters, date range availability and secure payments.",
+    stack: ["React.js", "Node.js", "MongoDB"],
+  },
+  {
+    id: "pj5",
+    title: "MedicoCare Appointments",
+    gallery: [shot("med-home"), shot("med-book"), shot("med-record")],
+    liveUrl: "https://example.com/medicare",
+    description:
+      "Doctor appointment system with calendars, reminders and patient records portal.",
+    stack: ["React.js", "Express", "MongoDB"],
+  },
+  {
+    id: "pj6",
+    title: "EduSpark LMS",
+    gallery: [shot("edu-home"), shot("edu-course"), shot("edu-quiz")],
+    liveUrl: "https://example.com/eduspark",
+    description:
+      "An e-learning platform with video courses, quizzes, progress tracking and auto generated certificates.",
+    stack: ["React.js", "Node.js", "MongoDB", "AWS S3"],
+  },
+  {
+    id: "pj7",
+    title: "CryptoPulse Tracker",
+    gallery: [shot("cry-home"), shot("cry-chart"), shot("cry-alert")],
+    liveUrl: "https://example.com/cryptopulse",
+    description:
+      "Live crypto price tracker with charts, watchlists and price alerts over public market APIs.",
+    stack: ["React.js", "Node.js", "WebSockets"],
+  },
+  {
+    id: "pj8",
+    title: "FitTrack Gym",
+    gallery: [shot("fit-home"), shot("fit-plan"), shot("fit-stats")],
+    liveUrl: "https://example.com/fittrack",
+    description:
+      "Workout and nutrition planner with progress charts and trainer programs.",
+    stack: ["React.js", "Express", "MongoDB"],
+  },
+  {
+    id: "pj9",
+    title: "EstateHub Realty",
+    gallery: [shot("est-home"), shot("est-list"), shot("est-map")],
+    liveUrl: "https://example.com/estatehub",
+    description:
+      "Property listings with map search, agent profiles and enquiry forms.",
+    stack: ["React.js", "Node.js", "MongoDB", "Maps API"],
+  },
+  {
+    id: "pj10",
+    title: "TaskFlow Manager",
+    gallery: [shot("task-home"), shot("task-board"), shot("task-report")],
+    liveUrl: "https://example.com/taskflow",
+    description:
+      "Kanban project manager with drag and drop boards, labels and team activity feeds.",
+    stack: ["React.js", "Node.js", "MongoDB"],
+  },
+  {
+    id: "pj11",
+    title: "ChatSphere Messenger",
+    gallery: [shot("chat-home"), shot("chat-room"), shot("chat-media")],
+    liveUrl: "https://example.com/chatsphere",
+    description:
+      "A real-time chat app with group rooms, typing indicators and media sharing over WebSockets.",
+    stack: ["React.js", "Socket.io", "MongoDB"],
+  },
+  {
+    id: "pj12",
+    title: "HireLink Jobs",
+    gallery: [shot("hire-home"), shot("hire-post"), shot("hire-apply")],
+    liveUrl: "https://example.com/hirelink",
+    description:
+      "Job board with recruiter dashboards, applications tracking and resume parsing.",
+    stack: ["React.js", "Express", "MongoDB"],
+  },
+];
+
 export const REVIEWS: Review[] = [
   {
-    name: "James Rodriguez",
-    role: "Founder, UrbanSole",
+    id: "rv1",
+    name: "Sarah Mitchell",
+    role: "Product Lead, UrbanSole",
     platform: "Upwork",
     rating: 5,
     text: "Delivered pixel-perfect React dashboards ahead of schedule. Clean, well-documented code and a smooth handover, and our in-house team picked it up with zero friction.",
     when: "2 weeks ago",
-    photo: "https://randomuser.me/portraits/men/32.jpg",
-    initials: "JR",
+    photo: "https://randomuser.me/api/portraits/women/44.jpg",
+    initials: "SM",
   },
   {
-    name: "Fatima Sheikh",
-    role: "CEO, FoodHub",
+    id: "rv2",
+    name: "Daniyal Khan",
+    role: "Founder, FoodHub",
     platform: "Fiverr",
     rating: 5,
     text: "This is our third project together with zero bugs in production every single time. He treats your product like his own. Highly recommended!",
     when: "1 month ago",
-    photo: "https://randomuser.me/portraits/women/44.jpg",
-    initials: "FS",
+    photo: "https://randomuser.me/api/portraits/men/32.jpg",
+    initials: "DK",
   },
   {
-    name: "Lucas Moreau",
-    role: "Product Manager, InsightHQ",
-    platform: "Google",
-    rating: 4,
-    text: "Great MERN skills and fast communication. Slight timezone overlap, but he made it work perfectly with async updates every morning.",
-    when: "2 months ago",
-    photo: "https://randomuser.me/portraits/men/22.jpg",
-    initials: "LM",
-  },
-  {
-    name: "Priya Nair",
-    role: "COO, Karvaan Tech",
+    id: "rv3",
+    name: "Lena Hoffman",
+    role: "CTO, InsightHQ",
     platform: "Upwork",
     rating: 5,
-    text: "Took our vague idea and turned it into a polished, investor-ready MVP in just six weeks. The demo day went flawlessly thanks to his prep.",
-    when: "3 months ago",
-    photo: "https://randomuser.me/portraits/women/21.jpg",
-    initials: "PN",
+    text: "Strong architecture decisions and great communication. He also suggested an ML model for churn that we ended up shipping. Rare mix of skills.",
+    when: "2 months ago",
+    photo: "https://randomuser.me/api/portraits/women/68.jpg",
+    initials: "LH",
   },
   {
-    name: "Hamza Tariq",
-    role: "Owner, Noor Boutique",
+    id: "rv4",
+    name: "Omar Farooq",
+    role: "CEO, Karvaan Tech",
     platform: "Google",
-    rating: 5,
-    text: "My boutique's website went from an idea to live in three weeks. He explained every step in simple words and the result looks better than my reference sites.",
-    when: "4 months ago",
-    photo: "https://randomuser.me/portraits/men/75.jpg",
-    initials: "HT",
+    rating: 4,
+    text: "Reliable and fast. Rebuilt our legacy app into a modern MERN stack and it has been stable since launch.",
+    when: "3 months ago",
+    photo: "https://randomuser.me/api/portraits/men/75.jpg",
+    initials: "OF",
   },
 ];
 
-export const PROFILE_IMAGE =
-  "https://image.qwenlm.ai/generated-images/1029df68-ac69-416b-bd1e-7f6dcfef5240/_result.png";
+export const TESTIMONIALS: Testimonial[] = [
+  {
+    id: "tm1",
+    quote: "Muzammil rebuilt our store from scratch. Page loads dropped from 6 seconds to under 1, and conversions jumped 40% in the first month.",
+    name: "Sarah Mitchell",
+    role: "Founder, UrbanSole, United Kingdom",
+    project: "UrbanSole Store",
+    initials: "SM",
+    rating: 5,
+    video: "",
+    duration: "0:42",
+  },
+  {
+    id: "tm2",
+    quote: "The live tracking feature he built is the reason our customers keep coming back. Flawless execution.",
+    name: "Daniyal Khan",
+    role: "CEO, FoodHub, Pakistan",
+    project: "FoodHub Delivery",
+    initials: "DK",
+    rating: 5,
+    video: "",
+    duration: "0:35",
+  },
+  {
+    id: "tm3",
+    quote: "He is one of the few developers who can do the web app and the ML model. A true full stack plus AI engineer.",
+    name: "Lena Hoffman",
+    role: "Product Manager, InsightHQ, Germany",
+    project: "InsightHQ Analytics",
+    initials: "LH",
+    rating: 5,
+    video: "",
+    duration: "0:50",
+  },
+  {
+    id: "tm4",
+    quote: "Clear communication, honest timelines and a codebase our team loves working in.",
+    name: "Omar Farooq",
+    role: "COO, Karvaan Tech, Karachi",
+    project: "Karvaan Web Portal",
+    initials: "OF",
+    rating: 5,
+    video: "",
+    duration: "0:28",
+  },
+];
+
+export const CONTACT_ITEMS: ContactItem[] = [
+  {
+    title: "Address",
+    value: "Hyderabad, Pakistan",
+    icon: "signpost",
+  },
+  {
+    title: "Contact Number",
+    value: "+92 314 3580908",
+    icon: "phone",
+    href: "tel:+923143580908",
+  },
+  {
+    title: "Email",
+    value: "muzammil.ahmed.dev@gmail.com",
+    icon: "plane",
+    href: "mailto:muzammil.ahmed.dev@gmail.com",
+  },
+  {
+    title: "Resume",
+    value: "Download my resume",
+    icon: "globe",
+  },
+];
+
+export const PROFILE_IMAGE = IMG.profile;

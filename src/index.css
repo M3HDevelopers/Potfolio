@@ -85,7 +85,6 @@ body {
   color: #000000;
 }
 
-/* Slim dark scrollbar with a golden thumb */
 ::-webkit-scrollbar {
   width: 9px;
 }
@@ -101,7 +100,6 @@ body {
   background: #ffc107;
 }
 
-/* Scroll-reveal primitive driven by IntersectionObserver */
 .reveal {
   opacity: 0;
   transform: translateY(30px);

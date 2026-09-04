@@ -1,9 +1,7 @@
 import { useContent } from "../store/content";
-import { useInView } from "../hooks/useInView";
-import Reveal from "./Reveal";
-import SectionHeading from "./SectionHeading";
+import { Reveal, SectionHeading, useInView } from "./ui";
 
-/** Words wrapped in [x]…[/x] render in the accent color. */
+/* Words wrapped in [x]…[/x] render in the accent color. */
 function renderHeadline(text: string) {
   const parts = text.split(/\[x\]|\[\/x\]/g);
   return parts.map((part, i) =>
@@ -54,29 +52,19 @@ export default function About() {
 
   return (
     <section id="about" className="relative overflow-hidden py-28">
-      <div
-        aria-hidden="true"
-        className="absolute right-0 top-1/3 h-96 w-96 rounded-full bg-accent/[0.04] blur-[130px]"
-      />
+      <div aria-hidden="true" className="absolute right-0 top-1/3 h-96 w-96 rounded-full bg-accent/[0.04] blur-[130px]" />
 
       <div className="relative mx-auto w-full max-w-6xl px-6 md:px-10">
         <SectionHeading watermark="ABOUT" title="About Me" />
 
         <div className="grid gap-16 lg:grid-cols-2 lg:gap-14">
-          {/* Left — profile, basic info, skills */}
           <Reveal>
             <div className="relative h-52 w-52 sm:h-56 sm:w-56">
-              <div
-                aria-hidden="true"
-                className="absolute -inset-3 animate-spin-slow rounded-full border border-dashed border-white/10"
-              />
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 translate-x-4 translate-y-4 rounded-full bg-accent"
-              />
+              <div aria-hidden="true" className="absolute -inset-3 animate-spin-slow rounded-full border border-dashed border-white/10" />
+              <div aria-hidden="true" className="absolute inset-0 translate-x-4 translate-y-4 rounded-full bg-accent" />
               <img
                 src={about.profileImage}
-                alt="Portrait of Muzammil Ahmed"
+                alt={`Portrait of ${content.hero.name}`}
                 loading="lazy"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = "none";
@@ -102,7 +90,6 @@ export default function About() {
             <SkillBars />
           </Reveal>
 
-          {/* Right — bio & info */}
           <Reveal delay={150}>
             <h3 className="font-display text-2xl font-bold leading-snug text-white sm:text-[1.7rem]">
               {renderHeadline(about.headline)}
@@ -110,7 +97,7 @@ export default function About() {
 
             {about.bioParagraphs.map((para, i) =>
               para.trim() ? (
-                <p key={i} className="mt-6 leading-relaxed text-gray-400 first-of-type:mt-6">
+                <p key={i} className="mt-6 leading-relaxed text-gray-400">
                   {para}
                 </p>
               ) : null,
@@ -119,9 +106,7 @@ export default function About() {
             <dl className="mt-10 grid grid-cols-1 gap-x-10 gap-y-7 sm:grid-cols-2">
               {about.infoGrid.map((item, i) => (
                 <div key={`${item.label}-${i}`} className="border-l-2 border-accent/60 pl-4">
-                  <dt className="text-sm font-bold uppercase tracking-wider text-white">
-                    {item.label}
-                  </dt>
+                  <dt className="text-sm font-bold uppercase tracking-wider text-white">{item.label}</dt>
                   <dd className="mt-1.5 text-sm text-gray-400">{item.value}</dd>
                 </div>
               ))}

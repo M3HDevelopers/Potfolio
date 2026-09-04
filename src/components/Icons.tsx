@@ -11,7 +11,6 @@ const base = {
   strokeLinejoin: "round" as const,
 };
 
-/** Roadside signpost — two arrow boards on a pole. */
 export function SignpostIcon(props: IconProps) {
   return (
     <svg {...base} {...props} aria-hidden="true">
@@ -23,7 +22,6 @@ export function SignpostIcon(props: IconProps) {
   );
 }
 
-/** Classic telephone handset. */
 export function PhoneIcon(props: IconProps) {
   return (
     <svg {...base} {...props} aria-hidden="true">
@@ -32,7 +30,6 @@ export function PhoneIcon(props: IconProps) {
   );
 }
 
-/** Paper plane / send. */
 export function PlaneIcon(props: IconProps) {
   return (
     <svg {...base} {...props} aria-hidden="true">
@@ -42,7 +39,6 @@ export function PlaneIcon(props: IconProps) {
   );
 }
 
-/** Globe with meridians. */
 export function GlobeIcon(props: IconProps) {
   return (
     <svg {...base} {...props} aria-hidden="true">
@@ -91,7 +87,40 @@ export function ChevronDownIcon(props: IconProps) {
   );
 }
 
-/** Arrow leaving a box — external link. */
+export function ChevronLeftIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props} aria-hidden="true">
+      <path d="m14 6-6 6 6 6" />
+    </svg>
+  );
+}
+
+export function ChevronRightIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props} aria-hidden="true">
+      <path d="m10 6 6 6-6 6" />
+    </svg>
+  );
+}
+
+export function ArrowUpIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props} aria-hidden="true">
+      <path d="M12 19V5" />
+      <path d="m5 12 7-7 7 7" />
+    </svg>
+  );
+}
+
+export function ArrowDownIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props} aria-hidden="true">
+      <path d="M12 5v14" />
+      <path d="m19 12-7 7-7-7" />
+    </svg>
+  );
+}
+
 export function ExternalLinkIcon(props: IconProps) {
   return (
     <svg {...base} {...props} aria-hidden="true">
@@ -102,37 +131,18 @@ export function ExternalLinkIcon(props: IconProps) {
   );
 }
 
-/** Filled five-point star. */
 export function StarIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" {...props} aria-hidden="true">
-      <path d="M12 2.6l2.83 5.9 6.47.94-4.7 4.53 1.15 6.43L12 17.33l-5.75 3.07 1.15-6.43-4.7-4.53 6.47-.94z" />
+      <path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" />
     </svg>
   );
 }
 
-/** Filled double quotation marks. */
-export function QuoteIcon(props: IconProps) {
+export function PlayIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" {...props} aria-hidden="true">
-      <path d="M9.6 5.5C6.1 7.2 4 10.1 4 13.5c0 2.9 1.8 5 4.3 5 2.2 0 3.8-1.6 3.8-3.8 0-2.1-1.5-3.6-3.5-3.6-.3 0-.7 0-1 .1.3-1.9 1.7-3.6 3.6-4.7L9.6 5.5z" />
-      <path d="M19.6 5.5c-3.5 1.7-5.6 4.6-5.6 8 0 2.9 1.8 5 4.3 5 2.2 0 3.8-1.6 3.8-3.8 0-2.1-1.5-3.6-3.5-3.6-.3 0-.7 0-1 .1.3-1.9 1.7-3.6 3.6-4.7l-1.6-1z" />
-    </svg>
-  );
-}
-
-export function ChevronLeftIcon(props: IconProps) {
-  return (
-    <svg {...base} {...props} aria-hidden="true">
-      <path d="m15 5-7 7 7 7" />
-    </svg>
-  );
-}
-
-export function ChevronRightIcon(props: IconProps) {
-  return (
-    <svg {...base} {...props} aria-hidden="true">
-      <path d="m9 5 7 7-7 7" />
+      <path d="M8.5 5.6v12.8a1 1 0 0 0 1.53.85l10.2-6.4a1 1 0 0 0 0-1.7L10.03 4.75a1 1 0 0 0-1.53.85Z" />
     </svg>
   );
 }
@@ -145,7 +155,6 @@ export function CheckIcon(props: IconProps) {
   );
 }
 
-/** Eye — item is visible on the website. */
 export function EyeIcon(props: IconProps) {
   return (
     <svg {...base} {...props} aria-hidden="true">
@@ -155,27 +164,16 @@ export function EyeIcon(props: IconProps) {
   );
 }
 
-/** Eye with a slash — item is hidden from the website. */
 export function EyeOffIcon(props: IconProps) {
   return (
     <svg {...base} {...props} aria-hidden="true">
-      <path d="M3 3l18 18" />
-      <path d="M10.6 5.9A9.8 9.8 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a17.6 17.6 0 0 1-3 3.9M6.1 8A17 17 0 0 0 2.5 12S6 18.5 12 18.5a9.7 9.7 0 0 0 4-.8" />
+      <path d="M4 4l16 16" />
+      <path d="M10.6 6a9.8 9.8 0 0 1 1.4-.1c6 0 9.5 6.1 9.5 6.1a17.6 17.6 0 0 1-3 3.6M6.3 6.9A16.9 16.9 0 0 0 2.5 12S6 18.1 12 18.1a9.5 9.5 0 0 0 3.7-.8" />
       <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
     </svg>
   );
 }
 
-/** Solid play triangle for video thumbnails. */
-export function PlayIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" {...props} aria-hidden="true">
-      <path d="M8.5 5.6v12.8a1 1 0 0 0 1.53.85l10.2-6.4a1 1 0 0 0 0-1.7L10.03 4.75a1 1 0 0 0-1.53.85Z" />
-    </svg>
-  );
-}
-
-/** AI chip — processor with pins. */
 export function ChipIcon(props: IconProps) {
   return (
     <svg {...base} {...props} aria-hidden="true">
@@ -187,7 +185,6 @@ export function ChipIcon(props: IconProps) {
   );
 }
 
-/** Small robot head — robotics touch. */
 export function RobotIcon(props: IconProps) {
   return (
     <svg {...base} {...props} aria-hidden="true">
