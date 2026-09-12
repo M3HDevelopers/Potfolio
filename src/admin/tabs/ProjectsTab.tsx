@@ -271,38 +271,42 @@ export default function ProjectsTab() {
             </div>
             <div className="flex shrink-0 items-center gap-2">
               {/* Reorder buttons */}
-              <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/[0.02] p-1">
+              <div className="flex items-center gap-1.5 rounded-lg border border-accent/30 bg-black/40 p-1.5">
                 <button
                   onClick={() => moveProject(p.id!, "top")}
                   disabled={projects.findIndex((x) => x.id === p.id) === 0}
                   title="Move to top"
-                  className="rounded p-1.5 text-gray-400 transition-colors hover:bg-accent/10 hover:text-accent disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                  className="flex items-center gap-1 rounded bg-accent/10 px-2 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-accent hover:text-black disabled:opacity-30 disabled:hover:bg-accent/10 disabled:hover:text-accent"
                 >
-                  <MoveToTopIcon className="h-3.5 w-3.5" />
+                  <MoveToTopIcon className="h-4 w-4" />
+                  <span className="hidden sm:inline">Top</span>
                 </button>
                 <button
                   onClick={() => moveProject(p.id!, "up")}
                   disabled={projects.findIndex((x) => x.id === p.id) === 0}
                   title="Move up"
-                  className="rounded p-1.5 text-gray-400 transition-colors hover:bg-accent/10 hover:text-accent disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                  className="flex items-center gap-1 rounded bg-white/10 px-2 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-accent hover:text-black disabled:opacity-30 disabled:hover:bg-white/10 disabled:hover:text-white"
                 >
-                  <ArrowUpIcon className="h-3.5 w-3.5" />
+                  <ArrowUpIcon className="h-4 w-4" />
+                  <span className="hidden sm:inline">Up</span>
                 </button>
                 <button
                   onClick={() => moveProject(p.id!, "down")}
                   disabled={projects.findIndex((x) => x.id === p.id) === projects.length - 1}
                   title="Move down"
-                  className="rounded p-1.5 text-gray-400 transition-colors hover:bg-accent/10 hover:text-accent disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                  className="flex items-center gap-1 rounded bg-white/10 px-2 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-accent hover:text-black disabled:opacity-30 disabled:hover:bg-white/10 disabled:hover:text-white"
                 >
-                  <ArrowDownIcon className="h-3.5 w-3.5" />
+                  <ArrowDownIcon className="h-4 w-4" />
+                  <span className="hidden sm:inline">Down</span>
                 </button>
                 <button
                   onClick={() => moveProject(p.id!, "bottom")}
                   disabled={projects.findIndex((x) => x.id === p.id) === projects.length - 1}
                   title="Move to bottom"
-                  className="rounded p-1.5 text-gray-400 transition-colors hover:bg-accent/10 hover:text-accent disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                  className="flex items-center gap-1 rounded bg-white/10 px-2 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-accent hover:text-black disabled:opacity-30 disabled:hover:bg-white/10 disabled:hover:text-white"
                 >
-                  <MoveToBottomIcon className="h-3.5 w-3.5" />
+                  <MoveToBottomIcon className="h-4 w-4" />
+                  <span className="hidden sm:inline">Bottom</span>
                 </button>
               </div>
 
