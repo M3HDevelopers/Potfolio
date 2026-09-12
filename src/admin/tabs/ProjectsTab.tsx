@@ -269,44 +269,44 @@ export default function ProjectsTab() {
                 {p.gallery.length} screenshots · {p.stack.slice(0, 4).join(", ")}
               </p>
             </div>
-            <div className="flex shrink-0 items-center gap-2">
-              {/* Reorder buttons */}
-              <div className="flex items-center gap-1.5 rounded-lg border border-accent/30 bg-black/40 p-1.5">
+            <div className="flex shrink-0 items-center gap-3">
+              {/* Reorder buttons - Prominent */}
+              <div className="flex items-center gap-2 rounded-lg border-2 border-accent bg-accent/5 p-2">
                 <button
                   onClick={() => moveProject(p.id!, "top")}
                   disabled={projects.findIndex((x) => x.id === p.id) === 0}
                   title="Move to top"
-                  className="flex items-center gap-1 rounded bg-accent/10 px-2 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-accent hover:text-black disabled:opacity-30 disabled:hover:bg-accent/10 disabled:hover:text-accent"
+                  className="flex items-center gap-1.5 rounded-md bg-accent px-3 py-2 text-sm font-bold text-black transition-all hover:bg-yellow-300 disabled:opacity-30 disabled:hover:bg-accent"
                 >
-                  <MoveToTopIcon className="h-4 w-4" />
-                  <span className="hidden sm:inline">Top</span>
+                  <MoveToTopIcon className="h-5 w-5" />
+                  <span>Top</span>
                 </button>
                 <button
                   onClick={() => moveProject(p.id!, "up")}
                   disabled={projects.findIndex((x) => x.id === p.id) === 0}
                   title="Move up"
-                  className="flex items-center gap-1 rounded bg-white/10 px-2 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-accent hover:text-black disabled:opacity-30 disabled:hover:bg-white/10 disabled:hover:text-white"
+                  className="flex items-center gap-1.5 rounded-md bg-white px-3 py-2 text-sm font-bold text-black transition-all hover:bg-gray-200 disabled:opacity-30 disabled:hover:bg-white"
                 >
-                  <ArrowUpIcon className="h-4 w-4" />
-                  <span className="hidden sm:inline">Up</span>
+                  <ArrowUpIcon className="h-5 w-5" />
+                  <span>Up</span>
                 </button>
                 <button
                   onClick={() => moveProject(p.id!, "down")}
                   disabled={projects.findIndex((x) => x.id === p.id) === projects.length - 1}
                   title="Move down"
-                  className="flex items-center gap-1 rounded bg-white/10 px-2 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-accent hover:text-black disabled:opacity-30 disabled:hover:bg-white/10 disabled:hover:text-white"
+                  className="flex items-center gap-1.5 rounded-md bg-white px-3 py-2 text-sm font-bold text-black transition-all hover:bg-gray-200 disabled:opacity-30 disabled:hover:bg-white"
                 >
-                  <ArrowDownIcon className="h-4 w-4" />
-                  <span className="hidden sm:inline">Down</span>
+                  <ArrowDownIcon className="h-5 w-5" />
+                  <span>Down</span>
                 </button>
                 <button
                   onClick={() => moveProject(p.id!, "bottom")}
                   disabled={projects.findIndex((x) => x.id === p.id) === projects.length - 1}
                   title="Move to bottom"
-                  className="flex items-center gap-1 rounded bg-white/10 px-2 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-accent hover:text-black disabled:opacity-30 disabled:hover:bg-white/10 disabled:hover:text-white"
+                  className="flex items-center gap-1.5 rounded-md bg-white px-3 py-2 text-sm font-bold text-black transition-all hover:bg-gray-200 disabled:opacity-30 disabled:hover:bg-white"
                 >
-                  <MoveToBottomIcon className="h-4 w-4" />
-                  <span className="hidden sm:inline">Bottom</span>
+                  <MoveToBottomIcon className="h-5 w-5" />
+                  <span>Bottom</span>
                 </button>
               </div>
 
