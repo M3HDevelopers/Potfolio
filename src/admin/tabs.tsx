@@ -383,31 +383,46 @@ export function ProjectsTab() {
     toast(target?.hidden ? "Project is now visible on the website" : "Project hidden from the website");
   };
 
-  const moveProject = (id: string, direction: "up" | "down" | "top" | "bottom") => {
-    const index = projects.findIndex((p) => p.id === id);
+  const moveProject = (id: string, direction: "up" | "down" | "top" | "bottom", section: "pinned" | "unpinned") => {
+    // Get projects for this specific section
+    const sectionProjects = projects.filter((p) => 
+      section === "pinned" ? p.featured : !p.featured
+    );
+    
+    const index = sectionProjects.findIndex((p) => p.id === id);
     if (index === -1) return;
 
-    const reordered = [...projects];
-    const [project] = reordered.splice(index, 1);
+    // Reorder within section
+    const reorderedSection = [...sectionProjects];
+    const [project] = reorderedSection.splice(index, 1);
 
     switch (direction) {
       case "up":
-        if (index > 0) reordered.splice(index - 1, 0, project);
-        else reordered.unshift(project);
+        if (index > 0) reorderedSection.splice(index - 1, 0, project);
+        else reorderedSection.unshift(project);
         break;
       case "down":
-        if (index < reordered.length) reordered.splice(index + 1, 0, project);
-        else reordered.push(project);
+        if (index < reorderedSection.length) reorderedSection.splice(index + 1, 0, project);
+        else reorderedSection.push(project);
         break;
       case "top":
-        reordered.unshift(project);
+        reorderedSection.unshift(project);
         break;
       case "bottom":
-        reordered.push(project);
+        reorderedSection.push(project);
         break;
     }
 
-    updateSection("projects", reordered);
+    // Rebuild full projects array maintaining section order
+    const otherSection = projects.filter((p) => 
+      section === "pinned" ? !p.featured : p.featured
+    );
+    
+    const newProjects = section === "pinned" 
+      ? [...reorderedSection, ...otherSection]
+      : [...otherSection, ...reorderedSection];
+
+    updateSection("projects", newProjects);
     toast(`Project moved ${direction}`);
   };
 
